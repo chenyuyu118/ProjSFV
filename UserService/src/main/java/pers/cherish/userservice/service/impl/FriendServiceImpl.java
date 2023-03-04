@@ -96,7 +96,6 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    // TODO 用缓存提速
     public UserBasicInfo getBasicInfo(long id) {
         final UserBasicInfo info = friendMapper.getBasicInfo(id);
         info.setFansCount(friendMapper.getFansCount(id));

@@ -1,4 +1,7 @@
 package pers.cherish.userservice.exception;
+
+import org.springframework.web.bind.annotation.ControllerAdvice;
+
 @ControllerAdvice
 public class UserExceptionHandler {
 //    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
