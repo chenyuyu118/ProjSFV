@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.cherish.userservice.mapper.UserMapper">
+
+
+    <update id="updateIsDeletedById">
+        update t_user
+        set is_deleted = 1
+        where id = #{id}
+    </update>
+    <update id="updateFiledById">
+        update t_user
+        set
+        <if test="filed == 'email'">email</if>
+        <if test="filed == 'phone_number'">phone_number</if>
+        <if test="filed == 'user_name'">user_name</if>
+        <if test="filed == 'password'">password</if>
+        <if test="filed == 'qq_number'">qq_number</if>
+        <if test="filed == 'vx_number'">vx_number</if>
+            = #{value}
+        where id = #{id}
+    </update>
+    <select id="selectUserPage" resultType="pers.cherish.userservice.model.User">
+        select * from t_user
+        where user_name like concat('%', #{value} ,'%')  or id = #{value} or phone_number = #{value}
+        limit #{startIndex}, #{endIndex}
+    </select>
+    <select id="selectAllUserVo" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address, is_deleted
+        from t_user;
+    </select>
+
+</mapper>

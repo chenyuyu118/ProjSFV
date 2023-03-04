@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.cherish.userservice.mapper.FriendMapper">
+
+    <insert id="follow">
+        insert into t_user_user_relationship (user1_id, user2_id, friend_relation, fan_relation)
+        <if test="id &gt; followId">
+            values (#{followId}, #{id}, b'00', b'10')
+        </if>
+        <if test="id &lt; followId">
+            values (#{id}, #{followId}, b'00', b'01')
+        </if>
+        on duplicate key update
+        <if test="id &gt; followId">
+            fan_relation = b'10' | fan_relation;
+        </if>
+        <if test="id &lt; followId">
+            fan_relation = b'01' | fan_relation;
+        </if>
+    </insert>
+    <insert id="insertFriend">
+        insert into t_user_user_relationship (user1_id, user2_id, friend_relation, fan_relation)
+        <if test="id &gt; friendId">
+            values (#{friendId}, #{id}, b'11', b'00')
+        </if>
+        <if test="id &lt; friendId">
+            values (#{id}, #{friendId}, b'11', b'00')
+        </if>
+        on duplicate key update
+        friend_relation = b'11';
+    </insert>
+    <update id="unfollow">
+        update t_user_user_relationship
+        set fan_relation = fan_relation &amp;
+        <if test="id &gt; followId">
+             b'01'
+        </if>
+        <if test="id &lt; followId">
+             b'10'
+        </if>
+        where user1_id = #{id} and user2_id = #{followId}
+        or user1_id = #{followId} and user2_id = #{id};
+    </update>
+    <update id="deleteFriend">
+        update t_user_user_relationship
+        set friend_relation = friend_relation &amp;
+        <if test="id &gt; friendId">
+          b'10'
+        </if>
+        <if test="id &lt; friendId">
+          b'01'
+        </if>
+        where user1_id = #{id} and user2_id = #{friendId} or user1_id = #{friendId} and user2_id = #{id}
+    </update>
+    <select id="getFans" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address
+        from t_user
+        where id in (
+            select user2_id
+            from t_user_user_relationship
+            where user1_id = #{id} and (fan_relation = b'10' or fan_relation = b'11')
+            union
+            select user1_id
+            from t_user_user_relationship
+            where user2_id = #{id} and (fan_relation = b'01' or fan_relation = b'11')
+        );
+    </select>
+    <select id="getFollows" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address
+        from t_user
+        where id in (
+            select user2_id
+            from t_user_user_relationship
+            where user1_id = #{id} and (fan_relation = b'01' or fan_relation = b'11')
+            union
+            select user1_id
+            from t_user_user_relationship
+            where user2_id = #{id} and (fan_relation = b'10' or fan_relation = b'11')
+        );
+    </select>
+    <select id="getFriendList" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address
+        from t_user
+        where id in (
+            select user2_id
+            from t_user_user_relationship
+            where user1_id = #{id} and (friend_relation = b'10' or friend_relation = b'11')
+            union
+            select user1_id
+            from t_user_user_relationship
+            where user2_id = #{id} and (friend_relation = b'01' or friend_relation = b'11')
+        );
+    </select>
+    <select id="getFriendPage" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address
+        from t_user
+        where id in (
+            select user2_id
+            from t_user_user_relationship
+            where user1_id = #{id} and (friend_relation = b'10' or friend_relation = b'11')
+            union
+            select user1_id
+            from t_user_user_relationship
+            where user2_id = #{id} and (friend_relation = b'01' or friend_relation = b'11')
+        )
+        order by id
+        limit #{startIndex}, #{endIndex};
+    </select>
+    <select id="getFansPage" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address
+        from t_user
+        where id in (
+            select user2_id
+            from t_user_user_relationship
+            where user1_id = #{id} and (fan_relation = b'10' or fan_relation = b'11')
+            union
+            select user1_id
+            from t_user_user_relationship
+            where user2_id = #{id} and (fan_relation = b'01' or fan_relation = b'11')
+        )
+        order by id
+        limit #{startIndex}, #{endIndex};
+    </select>
+    <select id="getFollowsPage" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address
+        from t_user
+        where id in (
+            select user2_id
+            from t_user_user_relationship
+            where user1_id = #{id} and (fan_relation = b'01' or fan_relation = b'11')
+            union
+            select user1_id
+            from t_user_user_relationship
+            where user2_id = #{id} and (fan_relation = b'10' or fan_relation = b'11')
+        )
+        order by id
+        limit #{startIndex}, #{endIndex};
+    </select>
+    <select id="getBasicInfo" resultType="pers.cherish.userservice.domain.UserBasicInfo">
+        select t1.id, t1.profile, t1.user_name, t1.signature, t1.gender, t1.current_address
+        from t_user t1
+        where t1.id = #{id};
+    </select>
+    <select id="getFansCount" resultType="java.lang.Long">
+        select count(*)
+        from (
+            <include refid="selectFans"/>
+        );
+    </select>
+    <select id="getFollowsCount" resultType="java.lang.Long">
+        select count(*)
+        from (
+            <include refid="selectFollows"/>
+        );
+    </select>
+    <select id="getFriendCount" resultType="java.lang.Long">
+        select count(*)
+        from (
+            <include refid="selectFriends"/>
+        );
+    </select>
+    <select id="getFriendIdListForCache" resultType="java.lang.Long">
+        <include refid="selectFriends" />
+    </select>
+    <select id="getFansIdListForCache" resultType="java.lang.Long">
+        <include refid="selectFans" />
+    </select>
+    <select id="getFollowsIdListForCache" resultType="java.lang.Long">
+        <include refid="selectFollows"></include>
+    </select>
+
+    <sql id="selectFans">
+        select user2_id id
+        from t_user_user_relationship
+        where user1_id = #{id} and (fan_relation = b'10' or fan_relation = b'11')
+        union
+        select user1_id id
+        from t_user_user_relationship
+        where user2_id = #{id} and (fan_relation = b'01' or fan_relation = b'11')
+    </sql>
+    <sql id="selectFollows">
+        select user2_id id
+        from t_user_user_relationship
+        where user1_id = #{id} and (fan_relation = b'01' or fan_relation = b'11')
+        union
+        select user1_id id
+        from t_user_user_relationship
+        where user2_id = #{id} and (fan_relation = b'10' or fan_relation = b'11')
+    </sql>
+    <sql id="selectFriends">
+        select user2_id id
+        from t_user_user_relationship
+        where user1_id = #{id} and (friend_relation = b'10' or friend_relation = b'11')
+        union
+        select user1_id id
+        from t_user_user_relationship
+        where user2_id = #{id} and (friend_relation = b'01' or friend_relation = b'11')
+    </sql>
+</mapper>
