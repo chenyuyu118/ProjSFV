@@ -43,9 +43,9 @@ public interface FriendService {
     List<Long> getFollowsIdListForCache(Long id);
 
     List<Long> getBlockedListForCache(Long id);
-    enum FriendStatus {
-        FRIEND, FOLLOW, FANS, BLOCKED, OTHER
-    }
+//    enum FriendStatus {
+//        FRIEND, FOLLOW, FANS, BLOCKED, OTHER
+//    }
     enum RelationMessage {
         REQ, REJECT, ACCEPT, DELETE
     }

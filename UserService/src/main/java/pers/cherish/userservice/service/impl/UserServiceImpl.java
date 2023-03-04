@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
         String imgType = img.substring(0, lastPointIndex); // jpg, png, gif
         final String s = cosTemplate.uploadBytes(bytes, userDTORegister.getProfileId() + "." + imgType);
         // TODO 修改上传
+        System.out.println("UserServiceImpl.register = " + s);
         Profile profile = new Profile(userDTORegister.getProfileId(), userDTORegister.getId(), Date.from(Instant.now()));
         profileMapper.insert(profile);
         userMapper.insert(user);
