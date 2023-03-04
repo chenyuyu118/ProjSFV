@@ -17,8 +17,4 @@ public class LongWrapper {
         return new LongWrapper(id);
     }
 
-    public static LongWrapper of(long id) {
-        return new LongWrapper(id);
-    }
-
 }

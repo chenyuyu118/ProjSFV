@@ -24,7 +24,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
-    private ProfileMapper profileMapper;
+    private final ProfileMapper profileMapper;
 
     private COSTemplate cosTemplate;
 
@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
         final byte[] bytes = Base64.getDecoder().decode(img.substring(lastPointIndex + 1));
         String imgType = img.substring(0, lastPointIndex); // jpg, png, gif
         final String s = cosTemplate.uploadBytes(bytes, userDTORegister.getProfileId() + "." + imgType);
+        // TODO 修改上传
         Profile profile = new Profile(userDTORegister.getProfileId(), userDTORegister.getId(), Date.from(Instant.now()));
         profileMapper.insert(profile);
         userMapper.insert(user);

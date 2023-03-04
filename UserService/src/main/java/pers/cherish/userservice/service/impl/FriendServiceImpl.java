@@ -62,8 +62,8 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public boolean unfollow(Long id, Long followId) {
-        return friendMapper.unfollow(id, followId);
+    public void unfollow(Long id, Long followId) {
+        friendMapper.unfollow(id, followId);
     }
     @Override
     public List<UserVo> getBlockedList(Long id) {

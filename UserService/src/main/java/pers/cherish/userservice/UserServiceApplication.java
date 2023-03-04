@@ -39,13 +39,11 @@ public class UserServiceApplication {
             final List<String> list = openApi.getPaths().keySet().stream()
                     .filter(path -> !collect.contains(path))
                     .toList();
-            list.forEach(path -> {
-                openApi.getPaths().get(path).addParametersItem(new HeaderParameter()
-                        .name("token")
-                        .description("用户令牌")
-                        .schema(new Schema().type("string"))
-                        .required(false));
-            });
+            list.forEach(path -> openApi.getPaths().get(path).addParametersItem(new HeaderParameter()
+                    .name("token")
+                    .description("用户令牌")
+                    .schema(new Schema().type("string"))
+                    .required(false)));
         };
     }
 

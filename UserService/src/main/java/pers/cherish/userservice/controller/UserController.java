@@ -52,7 +52,10 @@ public class UserController {
     private Long tokenExpireTime;
     @Value("${variable.rabbit.user-exchange-key}")
     private String userExchange;
-
+    @Value("${variable.rabbit.user-register-routing-key}")
+    private String userRegisterRoutingKey;
+    @Value("${variable.rabbit.user-update-routing-key}")
+    private String userUpdateRoutingKey;
     @Autowired
     public UserController(UserService userService, StringRedisTemplate stringRedisTemplate, RabbitTemplate rabbitTemplate) {
         this.userService = userService;
@@ -79,12 +82,12 @@ public class UserController {
         String profileId = UUID.randomUUID().toString();
         userDTORegister.setId(userId);
         userDTORegister.setProfileId(profileId);
-        userService.register(userDTORegister);
+        final Long registerId = userService.register(userDTORegister);
         UserVo userVo = new UserVo();
         BeanUtils.copyProperties(userDTORegister, userVo);
         userVo.setProfile(profileId);
-        rabbitTemplate.convertAndSend(userExchange, "user.register", userVo);
-        return ResponseEntity.ok(Map.of("message", "注册成功"));
+        rabbitTemplate.convertAndSend(userExchange, userRegisterRoutingKey, userVo);
+        return ResponseEntity.ok(Map.of("message", "注册成功", "data", registerId.toString()));
     }
 
     @PostMapping("/login")
@@ -173,7 +176,7 @@ public class UserController {
             final UserVo userVo = new UserVo();
             userVo.setId(id);
             userVo.setFiledValue(filedName, value);
-            rabbitTemplate.convertAndSend(userExchange, "user.update", userVo);
+            rabbitTemplate.convertAndSend(userExchange, userUpdateRoutingKey, userVo);
         }
         return ResponseEntity.ok(Map.of("message", "update success"));
     }

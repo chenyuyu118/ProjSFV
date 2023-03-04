@@ -55,24 +55,10 @@ public class FriendsController {
     private String userFriendRoutingKeyPrefix;
     @Value("${variable.rabbit.user-fan&follow-exchange-key}")
     private String userFanExchangeKey;
-//
-//    @Value("${variable.rabbit.user-friend-queue-key}")
-//    private String userFriendQueueKey;
-//
-//    @Value("${variable.rabbit.user-fan-queue-key}")
-//    private String userFanQueueKey;
-//
-//    @Value("${variable.rabbit.user-follow-queue-key}")
-//    private String userFollowQueueKey;
-//
-//    @Value("${variable.rabbit.user-blocked-queue-key}")
-//    private String userBlockedQueueKey;
     @Value("${variable.rabbit.user-fan-routing-key-prefix}")
     private String userFanRoutingKeyPrefix;
     @Value("${variable.rabbit.user-follow-routing-key-prefix}")
     private String userFollowRoutingKeyPrefix;
-    @Value("${variable.rabbit.user-blocked-routing-key-prefix}")
-    private String userBlockedRoutingKeyPrefix;
 
 
     @Autowired
@@ -278,7 +264,7 @@ public class FriendsController {
     })
     public ResponseEntity<Map<String , List<UserVo>>> getBlockedList(@PathVariable Long id, @RequestParam(value = "page", required = false, defaultValue = "1") int page) {
         return ResponseEntity.ok(Map.of("data",
-                friendService.getBlockedList(id, page, fansPageSize)));
+                friendService.getBlockedList(id, page, blockedPageSize)));
     }
 
     @PostMapping("/blocked/{id}")

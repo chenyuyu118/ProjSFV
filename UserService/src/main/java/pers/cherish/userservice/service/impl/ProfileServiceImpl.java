@@ -24,7 +24,7 @@ public class ProfileServiceImpl implements ProfileService {
         this.profileMapper = profileMapper;
     }
 
-    @Autowired(required = true)
+    @Autowired
     public void setCosTemplate(COSTemplate cosTemplate) {
         this.cosTemplate = cosTemplate;
     }

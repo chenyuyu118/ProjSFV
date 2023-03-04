@@ -22,7 +22,7 @@ public interface FriendService {
 
     void follow(Long id, Long followId);
 
-    boolean unfollow(Long id, Long followId);
+    void unfollow(Long id, Long followId);
 
     List<UserVo> getBlockedList(Long id);
 

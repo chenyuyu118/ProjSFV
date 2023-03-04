@@ -44,7 +44,7 @@ public interface UserService {
 
     User getUserByName(String  name);
 
-    public static enum FiledNames {
+    enum FiledNames {
         SIGNATURE {
             @Override
             public String toString() {
@@ -83,6 +83,6 @@ public interface UserService {
             public String toString() {
                 return "qq_number";
             }
-        };
+        }
     }
 }

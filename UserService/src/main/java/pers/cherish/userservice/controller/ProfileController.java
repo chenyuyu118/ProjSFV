@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pers.cherish.userservice.service.ProfileService;
@@ -23,15 +22,13 @@ import java.util.UUID;
 })
 public class ProfileController {
 
-    private StringRedisTemplate stringRedisTemplate;
-    private ProfileService profileService;
+    private final ProfileService profileService;
 
     @Value("${variable.profile-counter-key}")
     private String profileCounterKey;
 
     @Autowired(required = false)
-    public ProfileController(StringRedisTemplate stringRedisTemplate, ProfileService profileService) {
-        this.stringRedisTemplate = stringRedisTemplate;
+    public ProfileController(ProfileService profileService) {
         this.profileService = profileService;
     }
 

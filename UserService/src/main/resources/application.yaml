@@ -57,7 +57,6 @@ variable:
     blocked-page-size: 10
   user-counter-key: 'counter:user'
   profile-counter-key: 'counter:profile'
-  login-counter-key: 'counter:login'
   salt: 'cherish'
   token-expire-time: 168
   public-path: "/user/login,/user"
@@ -67,14 +66,8 @@ variable:
     user-friend-exchange-key: 'user.friend.exchange'
     user-exchange-key: "user.exchange"
     user-fan&follow-exchange-key: 'user.fan.exchange'
-
-    user-friend-queue-key: 'user.friends.#'
-    user-fan-queue-key: 'user.fans.#'
-    user-blocked-queue-key: 'user.blocked.#'
-    user-follow-queue-key: 'user.followers.#'
     user-friend-routing-key-prefix: 'user.friends.'
     user-fan-routing-key-prefix: 'user.fans.'
-    user-blocked-routing-key-prefix: 'user.blocked.'
     user-follow-routing-key-prefix: 'user.follows.'
-    user-insert-routing-key: 'user.insert'
-    user-delete-routing-key: 'user.delete'
+    user-register-routing-key: 'user.register'
+    user-update-routing-key: 'user.update'

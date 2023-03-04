@@ -92,10 +92,9 @@ public class UserListener {
                 System.out.println("listenUser: " + userVo);
                 mongoTemplate.insert(userVo, "user");
             }
-            case "delete" -> {
+            case "delete" ->
                 mongoTemplate.updateFirst(query(where("_id").is(userVo.getId())),
                         update("isDeleted", true), "user");
-            }
             case "update" -> {
 //                final Optional<UserVo> id = mongoTemplate.update(UserVo.class).
 //                        matching(query(where("id").is(userVo.getId()))).
