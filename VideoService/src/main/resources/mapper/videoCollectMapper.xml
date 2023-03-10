@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.cherish.mapper.VideoCollectMapper">
+    <insert id="addCollect">
+        insert into t_user_video_collect(user_id, video_id, collector)
+        values (#{userId}, #{videoId}, #{collector})
+    </insert>
+    <update id="updateCollector">
+        update t_user_video_collect
+        set collector = #{newCollector}
+        where user_id = #{userId} and collector = #{collector}
+    </update>
+    <delete id="deleteCollect">
+        delete from t_user_video_collect
+        where user_id = #{userId} and video_id = #{videoId} and collector = #{collector}
+    </delete>
+    <delete id="deleteCollector">
+        delete from t_user_video_collect
+        where user_id = #{userId} and collector = #{collector}
+    </delete>
+
+
+    <select id="getCollectCategory" resultType="java.lang.String">
+        SELECT DISTINCT collector
+        from t_user_video_collect
+        where user_id = #{userId}
+    </select>
+    <select id="getCollectionVideos" resultType="pers.cherish.domain.VideoVo">
+        select t2.profile_url, t2.video_id, t2.video_name, t2.tags
+        from t_user_video_collect, t_video t2
+        where user_id = #{userId} and collector = #{collector} and t_user_video_collect.video_id = t2.video_id
+    </select>
+
+
+</mapper>

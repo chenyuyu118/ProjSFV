@@ -1,37 +1,30 @@
 package pers.cherish.commons.aop;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import java.util.Arrays;
 import java.util.Map;
 
-@Component
 @Aspect
 public class UserAspect {
 
     private StringRedisTemplate stringRedisTemplate;
 
-    @Autowired
     public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
+
     public UserAspect() {
-        System.out.println("UserAspect");
+        System.out.println("UserAspect init");
     }
 
     @Pointcut("@annotation(pers.cherish.annotation.PermissionConfirm)")
@@ -39,8 +32,7 @@ public class UserAspect {
     }
 
     @Around("access()")
-    public Object doBefore(ProceedingJoinPoint joinPoint) throws Throwable {
-//        System.out.println("before");
+    public Object doAround(ProceedingJoinPoint joinPoint) throws Throwable {
         final RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) attributes;
         final HttpServletRequest request = servletRequestAttributes.getRequest();

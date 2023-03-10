@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.cherish.mapper.VideoLikeMapper">
+
+
+    <insert id="like">
+        insert into t_user_video_like (video_id, user_id, time)
+        values (#{videoId}, #{userId}, #{time})
+    </insert>
+    <insert id="dislike">
+        insert into t_user_video_dislike (video_id, user_id, time)
+        values (#{videoId}, #{userId}, #{time})
+    </insert>
+    <delete id="cancelLike">
+        delete from t_user_video_like
+        where video_id = #{videoId} and user_id = #{userId}
+    </delete>
+    <delete id="cancelDislike">
+        delete from t_user_video_dislike
+        where video_id = #{videoId} and user_id = #{userId}
+    </delete>
+    <select id="getLkeCount" resultType="java.lang.Long">
+        select count(*) from t_user_video_like
+        where video_id = #{videoId}
+    </select>
+    <select id="isLike" resultType="java.lang.Boolean">
+        select exists(select * from t_user_video_like
+        where video_id = #{videoId} and user_id = #{userId})
+    </select>
+    <select id="getLikeVideo" resultType="pers.cherish.domain.VideoVo">
+        select t2.video_id, t2.video_name, t2.tags, t2.profile_url
+        from t_user_video_like t1, t_video t2
+        where t1.video_id = t2.video_id and t1.user_id = #{userId}
+    </select>
+    <select id="getDislikeVideo" resultType="pers.cherish.domain.VideoVo">
+        select t2.video_id, t2.profile_url, t2.video_name, t2.tags
+        from t_video t2, t_user_video_dislike t1
+        where t1.video_id = t2.video_id and t1.user_id = #{userId}
+    </select>
+
+
+</mapper>

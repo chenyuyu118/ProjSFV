@@ -12,6 +12,8 @@ public class COSProperties {
     private String secretKey;
     private String region;
     private String profileBucket;
+
+    private String videoBucket;
     private String endpoint;
     private String path;
     private String url;
@@ -88,5 +90,13 @@ public class COSProperties {
 
     public void setAccessSecret(String accessSecret) {
         this.accessSecret = accessSecret;
+    }
+
+    public String getVideoBucket() {
+        return videoBucket;
+    }
+
+    public void setVideoBucket(String videoBucket) {
+        this.videoBucket = videoBucket;
     }
 }

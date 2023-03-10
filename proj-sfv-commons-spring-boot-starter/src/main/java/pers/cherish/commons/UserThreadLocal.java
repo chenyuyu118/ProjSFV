@@ -2,21 +2,20 @@ package pers.cherish.commons;
 
 
 import org.springframework.stereotype.Component;
-import pers.cherish.userservice.model.User;
 
 @Component
 public class UserThreadLocal {
-    ThreadLocal<User> userThreadLocal = new ThreadLocal<>();
+    private static ThreadLocal<Long> userThreadLocal = new ThreadLocal<>();
 
-    public void addUser(User user) {
+    public static void addUser(Long user) {
         userThreadLocal.set(user);
     }
 
-    public User getUser() {
+    public static Long getUser() {
         return userThreadLocal.get();
     }
 
-    public void removeUser() {
+    public static void removeUser() {
         userThreadLocal.remove();
     }
 }

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.cherish.mapper.VideoMapper">
+
+    <update id="deleteVideoById">
+        update t_video
+        set is_deleted = 1
+        where video_id= #{id}
+    </update>
+
+    <update id="updateVideo">
+        update t_video
+        set profile_url = #{profile},
+            video_name = #{videoName},
+            tags = #{tags},
+            is_published = #{isPublished},
+            description = #{description}
+        where video_id = #{videoId}
+    </update>
+
+
+    <select id="searchVideo" resultType="pers.cherish.videoservice.model.Video">
+        select * from t_video
+        where video_id = #{key} or video_name like concat('%',#{key},'%');
+    </select>
+
+    <select id="searchVideoPage" resultType="pers.cherish.videoservice.model.Video">
+        select * from t_video
+        where video_id = #{key} or video_name like concat('%',#{key},'%')
+        limit #{startIndex}, #{endIndex};
+    </select>
+
+    <select id="getVideoById" resultType="pers.cherish.videoservice.model.Video">
+        select * from t_video
+        where video_id = #{id};
+    </select>
+    <select id="isVideoExist" resultType="java.lang.Boolean">
+        select exists(select * from t_video where video_id = #{videoId});
+    </select>
+
+
+</mapper>

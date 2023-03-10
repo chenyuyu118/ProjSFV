@@ -1,0 +1,47 @@
+spring:
+  datasource:
+    username: cherish
+    password: Yuchenyu1
+    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_video
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+  data:
+    redis:
+      host: r-uf62pi4o5awjt6sbqupd.redis.rds.aliyuncs.com
+      username: cherish
+      password: Yuchenyu1
+    mongodb:
+      database: video
+      uri: mongodb+srv://cherish:Yuchenyu1@cluster0.pa95kl8.mongodb.net/test
+      password: Yuchenyu1
+logging:
+  level:
+    sql: trace
+    web: trace
+mybatis-plus:
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+        map-underscore-to-camel-case: true
+    mapper-locations: classpath:mapper/*.xml
+    type-aliases-package: pers.cherish.videoservice
+
+variable:
+  redis:
+    video-counter-key: counter:video
+    video-comment-counter-key: counter:video:comment
+  page:
+    video-page-size: 10
+    video-like-page-size: 20
+    video-collect-page-size: 20
+  exclude-token-path: "/swagger-ui.html,/swagger-resources/**,
+  /webjars/**,/swagger-ui/*,/v3/**"
+  public-path: "/user/login,/user"
+
+cos:
+  secret-id: AKIDzrcEgv68C3iDWcZLvKXflkW5RfocIl15
+  secret-key: tXyBAwUrY2JQl4BB1hASZSBjw2ykPtMi
+  region: ap-nanjing
+  profile-bucket: user-profile-1308753508
+  videoBucket: video-1308753508
+aspect:
+  type: user

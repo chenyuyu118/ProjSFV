@@ -50,13 +50,13 @@ cos:
   secret-key: tXyBAwUrY2JQl4BB1hASZSBjw2ykPtMi
   region: ap-nanjing
   profile-bucket: user-profile-1308753508
+
 variable:
   page:
     friend-page-size: 10
     fans-page-size: 10
     blocked-page-size: 10
   user-counter-key: 'counter:user'
-  profile-counter-key: 'counter:profile'
   salt: 'cherish'
   token-expire-time: 168
   public-path: "/user/login,/user"
@@ -71,3 +71,5 @@ variable:
     user-follow-routing-key-prefix: 'user.follows.'
     user-register-routing-key: 'user.register'
     user-update-routing-key: 'user.update'
+aspect:
+  type: video
