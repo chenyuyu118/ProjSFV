@@ -1,12 +1,9 @@
 package pers.cherish.commons.intercepter;
 
 import com.alibaba.fastjson2.JSON;
-import com.rabbitmq.tools.json.JSONUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.util.Map;
@@ -43,6 +40,5 @@ public class BasicInterceptor implements HandlerInterceptor {
             }
             return true;
         }
-//        return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 }

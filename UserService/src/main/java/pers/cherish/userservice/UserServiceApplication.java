@@ -11,9 +11,12 @@ import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.client.RestTemplate;
 import pers.cherish.userservice.model.UserVo;
 
 import java.util.*;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
 @EnableRabbit
+@EnableDiscoveryClient
 public class UserServiceApplication {
     @Value("#{'${variable.public-path}'.split(',')}")
     private String[] publicPath;
@@ -47,12 +51,6 @@ public class UserServiceApplication {
         };
     }
 
-//    @Bean
-//    public OpenAPI UserOpenAPI() {
-//        return new OpenAPI().addServersItem(new Server()
-//                .add
-//        )
-//    }
     @Bean
     public MessageConverter jsonMessageConverter() {
         final Jackson2JsonMessageConverter jsonMessageConverter = new Jackson2JsonMessageConverter();
@@ -66,6 +64,10 @@ public class UserServiceApplication {
         return jsonMessageConverter;
     }
 
-
+    @Bean
+    @LoadBalanced
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 
 }

@@ -126,7 +126,6 @@ public class UserController {
             @Parameter(name = "token", required = true, description = "token", in = ParameterIn.HEADER,
                     schema = @Schema(type = "string")),
     })
-    @PermissionConfirm
     public ResponseEntity<Map<String, UserDTO>> getInfo(@PathVariable("id") Long id) {
         return ResponseEntity.ok(Map.of("data", userService.getInfo(id)));
     }

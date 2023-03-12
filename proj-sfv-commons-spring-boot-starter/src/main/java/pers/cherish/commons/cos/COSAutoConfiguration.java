@@ -21,7 +21,6 @@ public class COSAutoConfiguration {
     private final COSProperties cosProperties;
 
     public COSAutoConfiguration(COSProperties cosProperties) {
-//        System.out.println("COSAutoConfiguration");
         this.cosProperties = cosProperties;
     }
 

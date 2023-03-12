@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.cherish.commentservice.mapper.CommentLikeMapper">
+
+
+    <insert id="like">
+        INSERT INTO t_comment_like (comment_id, user_id, video_id)
+        VALUES ( #{commentId}, #{userId}, #{videoId});
+        UPDATE t_comment
+        SET like_count = like_count + 1
+        WHERE comment_id = #{commentId} and video_id = #{videoId};
+    </insert>
+
+    <delete id="cancelLike">
+        DELETE FROM t_comment_like
+        WHERE comment_id = #{commentId} AND user_id = #{userId} and video_id = #{videoId};
+        UPDATE t_comment
+        SET like_count = like_count - 1
+        WHERE comment_id = #{commentId} and video_id = #{videoId};
+    </delete>
+
+    <select id="isLikeComment" resultType="java.lang.Boolean">
+        select exists(select 1 from t_comment_like where comment_id = #{commentId} and user_id = #{userId} and video_id = #{videoId})
+    </select>
+    <select id="isCommentExist" resultType="java.lang.Boolean">
+        select exists(select 1 from t_comment where comment_id = #{commentId} and video_id = #{videoId})
+    </select>
+</mapper>

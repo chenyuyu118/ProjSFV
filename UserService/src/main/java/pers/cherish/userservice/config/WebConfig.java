@@ -1,9 +1,13 @@
 package pers.cherish.userservice.config;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pers.cherish.commons.intercepter.BasicInterceptor;
@@ -29,16 +33,21 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(new BasicInterceptor(stringRedisTemplate))
                 .addPathPatterns("/**")
                 .excludePathPatterns(excludePath);
-//
-//                .excludePathPatterns("/user/login")
-//                .excludePathPatterns("/user")
-//                .excludePathPatterns("/swagger-ui.html")
-//                .excludePathPatterns("/swagger-resources/**")
-//                .excludePathPatterns("/webjars/**")
-//                .excludePathPatterns("/swagger-ui/**")
-//                .excludePathPatterns("/v3/**")
-//                .excludePathPatterns("/doc.html");
+        registry.addInterceptor(new HandlerInterceptor() {
+            @Override
+            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+                System.out.println("all");
+                return true;
+            }
+        }).addPathPatterns("/**");
+    }
 
-//        registry.addInterceptor(new PermissionCheckInterceptor());
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedHeaders("*")
+                .allowCredentials(true)
+                .allowedMethods("*");
     }
 }

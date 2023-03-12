@@ -3,7 +3,6 @@ package pers.cherish.commons.aop;
 import jakarta.servlet.http.HttpServletRequest;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +12,12 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Map;
 
-@Aspect
 public class UserAspect {
 
     private StringRedisTemplate stringRedisTemplate;
 
     public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
+        System.out.println(stringRedisTemplate == null);
         this.stringRedisTemplate = stringRedisTemplate;
     }
 

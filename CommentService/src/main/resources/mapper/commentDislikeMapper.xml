@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pers.cherish.commentservice.mapper.CommentDislikeMapper">
+
+
+    <insert id="dislike">
+        insert into t_comment_dislike (comment_id, video_id, user_id)
+        values ( #{commentId}, #{videoId}, #{userId} );
+        update t_comment
+        set dislike_count = dislike_count + 1
+        where comment_id = #{commentId} and video_id = #{videoId};
+    </insert>
+
+    <delete id="cancelDislike">
+        delete from t_comment_dislike
+        where comment_id = #{commentId} and user_id = #{userId} and video_id = #{videoId};
+        update t_comment
+        set dislike_count = dislike_count - 1
+        where comment_id = #{commentId} and video_id = #{videoId};
+    </delete>
+
+    <select id="isDislikeComment" resultType="java.lang.Boolean">
+        select exists(
+            select 1 from t_comment_dislike
+            where comment_id = #{commentId} and user_id = #{userId} and video_id = #{videoId}
+        )
+    </select>
+
+
+</mapper>

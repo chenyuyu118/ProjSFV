@@ -14,6 +14,11 @@ spring:
       database: video
       uri: mongodb+srv://cherish:Yuchenyu1@cluster0.pa95kl8.mongodb.net/test
       password: Yuchenyu1
+  application:
+    name: video-service
+  cloud:
+    nacos:
+      server-addr: localhost:8848
 logging:
   level:
     sql: trace
@@ -34,7 +39,7 @@ variable:
     video-like-page-size: 20
     video-collect-page-size: 20
   exclude-token-path: "/swagger-ui.html,/swagger-resources/**,
-  /webjars/**,/swagger-ui/*,/v3/**"
+  /webjars/**,/swagger-ui/*,/v3/**,/video/*"
   public-path: "/user/login,/user"
 
 cos:
@@ -45,3 +50,6 @@ cos:
   videoBucket: video-1308753508
 aspect:
   type: user
+
+server:
+  port: 8082

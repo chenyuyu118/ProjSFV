@@ -11,7 +11,7 @@ public class AOPAutoConfiguration {
 
     private StringRedisTemplate stringRedisTemplate;
 
-    @Autowired(required = false)
+    @Autowired
     public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
     }
@@ -19,6 +19,7 @@ public class AOPAutoConfiguration {
     @ConditionalOnProperty(prefix = "aspect", name = "type", havingValue = "user")
     @Bean
     public UserAspect userAspect() {
+        System.out.println(stringRedisTemplate == null);
         UserAspect userAspect = new UserAspect();
         userAspect.setStringRedisTemplate(stringRedisTemplate);
         return userAspect;

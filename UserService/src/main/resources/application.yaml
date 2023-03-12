@@ -2,13 +2,8 @@ server:
   port: 8080
   servlet:
     context-path: /
-  address: localhost
 spring:
   datasource:
-#    druid:
-##      url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_user
-#      username: cherish
-#      password: Yuchenyu1
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_user
     type: com.alibaba.druid.pool.DruidDataSource
@@ -23,18 +18,19 @@ spring:
       uri: mongodb+srv://cherish:Yuchenyu1@cluster0.pa95kl8.mongodb.net/test
       password: Yuchenyu1
       database: user
+
   rabbitmq:
     virtual-host: /
     host: 123.249.7.164
     password: root
     username: root
 
-#mybatis:
-#  configuration:
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-#    map-underscore-to-camel-case: true
-#  mapper-locations: classpath:mapper/*.xml
-#  type-aliases-package: pers.cherish.userservice
+  application:
+    name: user-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+
 logging:
   level:
     web: trace
@@ -61,7 +57,7 @@ variable:
   token-expire-time: 168
   public-path: "/user/login,/user"
   exclude-token-path: "/user,/swagger-ui.html,/swagger-resources/**,
-  /webjars/**,/user/login,/swagger-ui/*,/v3/**"
+  /webjars/**,/user/login,/swagger-ui/*,/v3/**,/user/*"
   rabbit:
     user-friend-exchange-key: 'user.friend.exchange'
     user-exchange-key: "user.exchange"
@@ -72,4 +68,4 @@ variable:
     user-register-routing-key: 'user.register'
     user-update-routing-key: 'user.update'
 aspect:
-  type: video
+  type: user

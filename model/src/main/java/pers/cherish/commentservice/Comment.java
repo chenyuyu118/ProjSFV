@@ -1,15 +1,21 @@
-package pers.cherish.commentserive;
+package pers.cherish.commentservice;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@TableName("t_comment")
 public class Comment {
     // 评论视频id，同视频id
     private String videoId;
     // 评论id
-    private Integer commentId;
+    private Long commentId;
     // 评论作者
     private Long authorId;
     // 评论内容
@@ -22,10 +28,8 @@ public class Comment {
     private LocalDateTime commentTime;
     // 评论是否删除
     private Boolean isDeleted;
-    // 评论是否被举报
-    private Boolean isReported;
     // 评论父评论id, 顶级评论为0
-    private Integer parentId;
+    private Long parentId;
     // 回复id
-    private Integer replyId;
+    private Long replyId;
 }
