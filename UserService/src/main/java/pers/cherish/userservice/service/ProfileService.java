@@ -9,4 +9,5 @@ public interface ProfileService {
     void updateProfile(String  id, Long ownerId, String img);
     List<String > getHistoricalProfiles(Long id);
 
+    String getCurrentProfile(Long id);
 }

@@ -40,6 +40,11 @@
     <select id="isVideoExist" resultType="java.lang.Boolean">
         select exists(select * from t_video where video_id = #{videoId});
     </select>
+    <select id="getRandomVideo" resultType="pers.cherish.videoservice.model.Video">
+        select * from t_video
+        order by rand()
+        limit 1
+    </select>
 
 
 </mapper>

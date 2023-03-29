@@ -14,6 +14,7 @@
         <module>proj-sfv-commons-spring-boot-starter</module>
         <module>VideoService</module>
         <module>gateway</module>
+        <module>RecommandService</module>
     </modules>
     <groupId>pers.cherish</groupId>
     <artifactId>ProjSFV</artifactId>

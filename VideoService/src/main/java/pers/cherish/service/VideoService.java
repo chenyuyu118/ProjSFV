@@ -26,4 +26,6 @@ public interface VideoService {
     Video getVideoById(String videoId);
 
     boolean isVideoExist(String videoId);
+
+    List<Video> getRandomVideo();
 }

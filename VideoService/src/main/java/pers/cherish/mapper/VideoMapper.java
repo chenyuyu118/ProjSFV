@@ -20,4 +20,6 @@ public interface VideoMapper extends BaseMapper<Video> {
     void updateVideo(VideoDTOUpdate video);
 
     boolean isVideoExist(String videoId);
+
+    Video getRandomVideo();
 }

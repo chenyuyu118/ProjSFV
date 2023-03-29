@@ -1,7 +1,6 @@
 package pers.cherish.userservice.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,12 +31,12 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public void updateProfile(String  id, Long ownerId, String img) {
-        System.out.println(img);
-        int lastPointIndex = img.lastIndexOf(",");
-        final byte[] bytes = Base64.decodeBase64(img.substring(lastPointIndex + 1));
-        String imgType = img.substring(0, lastPointIndex); // jpg, png, gif
-        final String s = cosTemplate.uploadBytes(bytes, id + "." + imgType);
-        if (s.equals("fault")) {
+//        int lastPointIndex = img.lastIndexOf(",");
+//        final byte[] bytes = Base64.decodeBase64(img.substring(lastPointIndex + 1));
+//        String imgType = img.substring(0, lastPointIndex); // jpg, png, gif
+//        final String s = cosTemplate.uploadBytes(bytes, id + "." + imgType);
+        String s = cosTemplate.uploadProfile(img, id);
+        if (s.equals("failed")) {
             throw new RuntimeException("上传失败");
         } else {
             profileMapper.insert(new Profile(id, ownerId, Date.from(Instant.now())));
@@ -51,5 +50,13 @@ public class ProfileServiceImpl implements ProfileService {
                 .orderBy(true, false, "register_time");
         return profileMapper.selectList(wrapper).stream()
                 .map(Profile::getId).toList();
+    }
+
+    @Override
+    public String getCurrentProfile(Long id) {
+        final QueryWrapper<Profile> wrapper = new QueryWrapper<>();
+        wrapper.eq("owner_id", id)
+                .orderBy(true, false, "register_time");
+        return profileMapper.selectList(wrapper).get(0).getId();
     }
 }

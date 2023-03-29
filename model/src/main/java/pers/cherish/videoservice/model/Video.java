@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class Video {
     // 视频id
-    private Long videoId;
+    private String videoId;
     // 视频名称
     private String videoName;
     // 视频url
@@ -26,8 +26,6 @@ public class Video {
     private String profileUrl;
     // 点踩数目
     private Integer dislikeCount = 0;
-    // 评论对应id
-    private Long commentId;
     // 提交时间
     private LocalDateTime submitTime;
     // 是否发布

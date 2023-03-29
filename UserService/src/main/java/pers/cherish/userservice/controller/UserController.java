@@ -96,11 +96,13 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "登录成功"),
             @ApiResponse(responseCode = "401", description = "登录失败,用户名或密码错误")
     })
-    public ResponseEntity<Map<String, Object>> login(Long macAddress,
-                                                     String username, String password) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String , String > data) {
+        String macAddress = null;
+        String username = data.get("username");
+        String password = data.get("password");
         final User login = userService.login(username, password);
         if (login == null) {
-            return ResponseEntity.ok(Map.of("message", "账号密码错误"));
+            return ResponseEntity.status(401).body(Map.of("message", "账号密码错误"));
         } else {
             long expireTime = 1;
             String userName = login.getUserName();
@@ -113,7 +115,7 @@ public class UserController {
             token += ";";
             token =  DigestUtils.md5Hex(token + salt);
             stringRedisTemplate.opsForValue().set("token:" + token, id, expireTime, TimeUnit.HOURS);
-            return ResponseEntity.ok(Map.of("data", Map.of("token", token)));
+            return ResponseEntity.ok(Map.of("data", Map.of("token", token, "id", id)));
         }
     }
 

@@ -8,9 +8,14 @@ import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.model.StorageClass;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +46,40 @@ public class COSTemplate {
             message = "fault";
         }
         return message;
+    }
+
+    public String uploadFile(File file, String key) {
+        PutObjectRequest putObjectRequest = new PutObjectRequest(cosProperties.getProfileBucket(), key, file);
+        String message = null;
+        try {
+            PutObjectResult result = cosClient.putObject(putObjectRequest);
+            message = result.getRequestId();
+        } catch (CosClientException e) {
+            e.printStackTrace();
+            message = "fault";
+        }
+        return message;
+    }
+
+    public String uploadProfile(String base64Img, String id) {
+//        // 获取类型信息
+//        String mediaType = parts[0].split(":")[1];
+//        final String type = MimeTypeUtils.parseMimeType(mediaType).getSubtype();
+        // 解码base64信息
+        String[] parts = base64Img.split(",");
+        byte[] imageBytes = Base64.getDecoder().decode(parts[1]);
+        // 转化为需要的类型
+        final BufferedImage image;
+        try {
+            image = ImageIO.read(new ByteArrayInputStream(imageBytes));
+            final String s1 = id + ".jpg";
+            File newImage = new File(s1);
+            ImageIO.write(image, "jpg", newImage);
+            return this.uploadFile(newImage, s1);
+        } catch (IOException e) {
+            System.out.println("upload failed");
+        }
+        return "failed";
     }
 
     private void shutdown() {

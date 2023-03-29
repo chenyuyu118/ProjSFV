@@ -13,6 +13,7 @@ import pers.cherish.service.VideoService;
 import pers.cherish.videoservice.model.Video;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,9 +51,9 @@ public class VideoServiceImpl implements VideoService {
         videoDTO.setSubmitTime(LocalDateTime.now());
         Video newVideo = new Video();
         BeanUtils.copyProperties(videoDTO, newVideo);
+        // TODO id生成需要更新
         final Long videoId = stringRedisTemplate.opsForValue().increment(videoCounterKey);
-        newVideo.setVideoId(videoId);
-        newVideo.setCommentId(videoId);
+        newVideo.setVideoId(String.valueOf(videoId));
         final String imageUrl = cosTemplate.uploadImage(videoDTO.getProfile());
         newVideo.setProfileUrl(imageUrl);
         videoMapper.insert(newVideo);
@@ -105,5 +106,15 @@ public class VideoServiceImpl implements VideoService {
     @Override
     public boolean isVideoExist(String videoId) {
         return videoMapper.isVideoExist(videoId);
+    }
+
+    @Override
+    public List<Video> getRandomVideo() {
+        final ArrayList<Video> list = new ArrayList<>();
+        Video randomVideo = videoMapper.getRandomVideo();
+        list.add(randomVideo);
+        randomVideo = videoMapper.getRandomVideo();
+        list.add(randomVideo);
+        return list;
     }
 }

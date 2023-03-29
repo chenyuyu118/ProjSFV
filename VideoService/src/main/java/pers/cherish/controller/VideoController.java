@@ -149,4 +149,19 @@ public class VideoController {
     public ResponseEntity<MyResponse<List<Video>>> searchVideo(@PathVariable String key) {
         return ResponseEntity.ok(MyResponse.ofData(videoService.searchVideo(key)));
     }
+
+    /**
+     * 随机获取一个视频列表
+     */
+    @GetMapping("/random")
+    @Operation(summary = "随机获取一个视频列表", description = "随机获取一个视频列表")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "获取成功"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "获取失败")
+            }
+    )
+    public ResponseEntity<MyResponse<List<Video>>> getRandomVideo() {
+        return ResponseEntity.ok(MyResponse.ofData(videoService.getRandomVideo()));
+    }
 }

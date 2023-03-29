@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pers.cherish.annotation.PermissionConfirm;
 import pers.cherish.userservice.service.ProfileService;
 
 import java.util.Map;
@@ -33,6 +34,7 @@ public class ProfileController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "成功"),
     })
+    @PermissionConfirm
     public ResponseEntity<Object> updateProfile(@PathVariable Long id, @RequestBody String newProfile) {
         final String profileId = UUID.randomUUID().toString();
         profileService.updateProfile(profileId, id, newProfile);
@@ -46,5 +48,16 @@ public class ProfileController {
     })
     public ResponseEntity<Object> getHistoricalProfile(@PathVariable Long id) {
         return ResponseEntity.ok(Map.of("data", profileService.getHistoricalProfiles(id)));
+    }
+
+
+    // 获取用户当前头像
+    @GetMapping("/current/{id}")
+    @Operation(summary = "获取用户当前头像", description = "获取用户当前头像")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "成功"),
+    })
+    public ResponseEntity<Object> getCurrentProfile(@PathVariable Long id) {
+        return ResponseEntity.ok(Map.of("data", profileService.getCurrentProfile(id)));
     }
 }

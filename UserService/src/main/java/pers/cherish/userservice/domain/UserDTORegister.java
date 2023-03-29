@@ -22,7 +22,7 @@ public class UserDTORegister {
     private String signature;
     @Schema(name = "password", description = "密码", example = "123456")
     private String password;
-    @Schema(name = "phoneNumber", description = "昵称", example = "cherish")
+    @Schema(name = "phoneNumber", description = "手机号", example = "cherish")
     private String phoneNumber;
     /**
      * 男生为1,女生为0

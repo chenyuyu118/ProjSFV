@@ -16,7 +16,6 @@ import pers.cherish.userservice.service.UserService;
 
 import java.sql.Date;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -54,13 +53,21 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         BeanUtils.copyProperties(userDTORegister, user, "profile");
         user.setProfile(userDTORegister.getProfileId());
-        String img = userDTORegister.getProfile();
-        int lastPointIndex = img.lastIndexOf(",");
-        final byte[] bytes = Base64.getDecoder().decode(img.substring(lastPointIndex + 1));
-        String imgType = img.substring(0, lastPointIndex); // jpg, png, gif
-        final String s = cosTemplate.uploadBytes(bytes, userDTORegister.getProfileId() + "." + imgType);
-        // TODO 修改上传
-        System.out.println("UserServiceImpl.register = " + s);
+
+        // 从base64中获取图片
+        String img = userDTORegister.getProfile(); // base64数据
+        // 获取类型信息
+//        String[] parts = img.split(",");
+//        String mediaType = parts[0].split(":")[1];
+//        final String type = MimeTypeUtils.parseMimeType(mediaType).getSubtype();
+//        // 解码base64信息
+//        byte[] imageBytes = Base64.getDecoder().decode(parts[1]);
+//        // 尝试上传
+//        final String s1 = userDTORegister.getProfileId() + "." + type;
+//        final String s = cosTemplate.uploadBytes(imageBytes, s1);
+
+        String s = cosTemplate.uploadProfile(userDTORegister.getProfile(), userDTORegister.getProfileId());
+//        System.out.println("UserServiceImpl.register = " + s);
         Profile profile = new Profile(userDTORegister.getProfileId(), userDTORegister.getId(), Date.from(Instant.now()));
         profileMapper.insert(profile);
         userMapper.insert(user);

@@ -2,6 +2,7 @@ package pers.cherish.commentservice.domain;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,7 +18,7 @@ public class CommentTreeNode {
     // 点赞数目
     private Long likeCount;
     // 评论时间
-    private String commentTime;
+    private LocalDateTime commentTime;
     // 评论是否删除
     private Boolean isDeleted;
     // 回复id
