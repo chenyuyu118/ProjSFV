@@ -90,14 +90,17 @@ public class UserListener {
         switch (operate) {
             case "register" -> {
                 System.out.println("listenUser: " + userVo);
-                mongoTemplate.insert(userVo, "user");
+                if (!mongoTemplate.exists(query(where("_id").is(userVo.getId())), "user")) {
+                    mongoTemplate.insert(userVo, "user");
+                } else {
+                    mongoTemplate.remove(query(where("_id").is(userVo.getId())), "user");
+                    mongoTemplate.insert(userVo, "user");
+                }
             }
             case "delete" ->
                 mongoTemplate.updateFirst(query(where("_id").is(userVo.getId())),
                         update("isDeleted", true), "user");
             case "update" -> {
-//                final Optional<UserVo> id = mongoTemplate.update(UserVo.class).
-//                        matching(query(where("id").is(userVo.getId()))).
                 final Map<String, String> map = userVo.gNotNullFieldMap();
                 mongoTemplate.updateFirst(query(where("_id").is(userVo.getId())),
                         update(map.get("field"), map.get("value")), "user");
@@ -143,10 +146,16 @@ public class UserListener {
             }
             case "add" -> {
                 friendService.follow(meg.getId(), meg.getOtherId());
-                mongoTemplate.insert(LongWrapper.of(meg.getOtherId()),
-                        meg.getId() + "-follows");
-                mongoTemplate.insert(LongWrapper.of(meg.getId()),
-                        meg.getOtherId() + "-fans");
+                String collectionName = meg.getId() + "-follows";
+                if (!mongoTemplate.exists(query(where("_id").is(meg.getOtherId())), collectionName)) {
+                    mongoTemplate.insert(LongWrapper.of(meg.getOtherId()),
+                            collectionName);
+                }
+                String collectionName1 = meg.getOtherId() + "-fans";
+                if (!mongoTemplate.exists(query(where("_id").is(meg.getId())), collectionName1)) {
+                    mongoTemplate.insert(LongWrapper.of(meg.getId()),
+                            collectionName1);
+                }
             }
             case "delete" -> {
                 friendService.unfollow(meg.getId(), meg.getOtherId());

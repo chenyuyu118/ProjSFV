@@ -18,6 +18,7 @@ import pers.cherish.service.VideoService;
 import pers.cherish.videoservice.model.Video;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -47,13 +48,15 @@ public class VideoController {
                     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "上传失败")
             }
     )
-    public ResponseEntity<MyResponse<String>> uploadVideo(@RequestBody VideoDTO videoDTO,
-                                                          @Parameter(hidden = true) HttpServletRequest request) {
+    public ResponseEntity<MyResponse<Map<String, Object>>> uploadVideo(@RequestBody VideoDTO videoDTO,
+                                                                       @Parameter(hidden = true) HttpServletRequest request) {
         final String token = request.getHeader("token");
+        System.out.println(token);
         final Long s = Long.valueOf(Objects.requireNonNull(stringRedisTemplate.opsForValue().get("token:" + token)));
         if (!Objects.equals(s, videoDTO.getAuthorId()))
-            return ResponseEntity.badRequest().body(MyResponse.ofMessage("没有操作权限"));
-        return ResponseEntity.ok(MyResponse.ofData(videoService.uploadVideo(videoDTO)));
+            return ResponseEntity.status(406).body(MyResponse.ofMessage("没有操作权限"));
+        return ResponseEntity.ok(MyResponse.ofData(
+                videoService.uploadVideo(videoDTO)));
     }
 
     // 删除视频

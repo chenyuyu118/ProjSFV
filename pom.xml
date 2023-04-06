@@ -15,6 +15,7 @@
         <module>VideoService</module>
         <module>gateway</module>
         <module>RecommandService</module>
+        <module>MaterialService</module>
     </modules>
     <groupId>pers.cherish</groupId>
     <artifactId>ProjSFV</artifactId>
@@ -28,6 +29,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.qcloud</groupId>
+                <artifactId>cos-sts_api</artifactId>
+                <version>3.1.0</version>
+            </dependency>
             <dependency>
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>

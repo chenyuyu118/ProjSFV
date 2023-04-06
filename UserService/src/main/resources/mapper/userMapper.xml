@@ -13,18 +13,12 @@
     </update>
     <update id="updateFiledById">
         update t_user
-        set
-        <if test="filed == 'email'">email</if>
-        <if test="filed == 'phone_number'">phone_number</if>
-        <if test="filed == 'user_name'">user_name</if>
-        <if test="filed == 'password'">password</if>
-        <if test="filed == 'qq_number'">qq_number</if>
-        <if test="filed == 'vx_number'">vx_number</if>
+        set ${filed}
             = #{value}
         where id = #{id}
     </update>
-    <select id="selectUserPage" resultType="pers.cherish.userservice.model.User">
-        select * from t_user
+    <select id="selectUserPage" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address, is_deleted from t_user
         where user_name like concat('%', #{value} ,'%')  or id = #{value} or phone_number = #{value}
         limit #{startIndex}, #{endIndex}
     </select>

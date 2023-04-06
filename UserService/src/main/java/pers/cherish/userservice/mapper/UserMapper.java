@@ -14,7 +14,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     void updateFiledById(Long id, String filed, String value);
 
-    List<User> selectUserPage(String value, int startIndex, int endIndex);
+    List<UserVo> selectUserPage(String value, int startIndex, int endIndex);
 
     List<UserVo> selectAllUserVo();
 }

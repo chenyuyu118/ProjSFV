@@ -7,4 +7,5 @@ import pers.cherish.userservice.model.Profile;
 @Mapper
 public interface ProfileMapper extends BaseMapper<Profile> {
 
+    void updateProfileHistorical(Long id, String profileId);
 }

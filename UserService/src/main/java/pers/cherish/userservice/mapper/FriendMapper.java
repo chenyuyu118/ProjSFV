@@ -1,6 +1,7 @@
 package pers.cherish.userservice.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import pers.cherish.userservice.domain.Relation;
 import pers.cherish.userservice.domain.UserBasicInfo;
 import pers.cherish.userservice.model.UserVo;
 
@@ -36,4 +37,6 @@ public interface FriendMapper {
     List<Long> getFansIdListForCache(Long id);
 
     List<Long> getFollowsIdListForCache(Long id);
+
+    Relation getRelationWith(long id, long otherId);
 }

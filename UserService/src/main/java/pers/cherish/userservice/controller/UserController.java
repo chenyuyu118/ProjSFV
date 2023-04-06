@@ -1,5 +1,6 @@
 package pers.cherish.userservice.controller;
 
+import com.tencentyun.TLSSigAPIv2;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pers.cherish.annotation.PermissionConfirm;
 import pers.cherish.commons.aop.UserAspect;
+import pers.cherish.response.MyResponse;
 import pers.cherish.userservice.domain.UserDTORegister;
 import pers.cherish.userservice.model.User;
 import pers.cherish.userservice.model.UserDTO;
@@ -41,7 +43,7 @@ import java.util.concurrent.TimeUnit;
 public class UserController {
     private final UserService userService;
     private final StringRedisTemplate stringRedisTemplate;
-
+    private final TLSSigAPIv2 tlsSigAPIv2;
     private final RabbitTemplate rabbitTemplate;
 
     @Value("${variable.user-counter-key}")
@@ -56,11 +58,15 @@ public class UserController {
     private String userRegisterRoutingKey;
     @Value("${variable.rabbit.user-update-routing-key}")
     private String userUpdateRoutingKey;
+    @Value("${variable.im.expire-time}")
+    private Long imExpireTime;
     @Autowired
-    public UserController(UserService userService, StringRedisTemplate stringRedisTemplate, RabbitTemplate rabbitTemplate) {
+    public UserController(UserService userService, StringRedisTemplate stringRedisTemplate,
+                          RabbitTemplate rabbitTemplate, TLSSigAPIv2 tlsSigAPIv2) {
         this.userService = userService;
         this.stringRedisTemplate = stringRedisTemplate;
         this.rabbitTemplate = rabbitTemplate;
+        this.tlsSigAPIv2 = tlsSigAPIv2;
     }
 
     @PostMapping("")
@@ -74,9 +80,9 @@ public class UserController {
                     schema = @Schema(implementation = UserDTORegister.class)
             )
     )
-    public ResponseEntity<Map<String ,String >> register(@RequestBody UserDTORegister userDTORegister) {
+    public ResponseEntity<MyResponse<Map>> register(@RequestBody UserDTORegister userDTORegister) {
         if (userService.getUserByName(userDTORegister.getUserName()) != null) {
-            return ResponseEntity.status(400).body(Map.of("message", "用户名已存在"));
+            return ResponseEntity.status(400).body(MyResponse.ofMessage("用户名已经存在"));
         }
         Long userId = stringRedisTemplate.opsForValue().increment(userCounterKey);
         String profileId = UUID.randomUUID().toString();
@@ -87,7 +93,15 @@ public class UserController {
         BeanUtils.copyProperties(userDTORegister, userVo);
         userVo.setProfile(profileId);
         rabbitTemplate.convertAndSend(userExchange, userRegisterRoutingKey, userVo);
-        return ResponseEntity.ok(Map.of("message", "注册成功", "data", registerId.toString()));
+        // 注册后默认登陆
+        String token = userDTORegister.getUserName() + ";" + userId + ";";
+        token =  DigestUtils.md5Hex(token + salt);
+        stringRedisTemplate.opsForValue().set("token:" + token, userId.toString(), tokenExpireTime, TimeUnit.HOURS);
+        String sig = tlsSigAPIv2.genUserSig(userId.toString(), imExpireTime);
+        Map<String, String> data = Map.of("token", token, "id", userId.toString(), "sig", sig, "gender",
+                userVo.getGender().toString(), "profile", profileId, "userName", userVo.getUserName(),
+                "birthday", userDTORegister.getBirthday() == null ? "" : userDTORegister.getBirthday().toString());
+        return ResponseEntity.ok(MyResponse.ofData(data));
     }
 
     @PostMapping("/login")
@@ -104,18 +118,21 @@ public class UserController {
         if (login == null) {
             return ResponseEntity.status(401).body(Map.of("message", "账号密码错误"));
         } else {
-            long expireTime = 1;
+            long expireTime = tokenExpireTime;
             String userName = login.getUserName();
             String id = login.getId().toString();
             String token = userName + ";" + id + ";";
-            if (macAddress != null) {
-                token += macAddress;
-                expireTime = tokenExpireTime;
-            }
-            token += ";";
+//            if (macAddress != null) {
+//                token += macAddress;
+//                token += ";";
+//                expireTime = tokenExpireTime;
+//            }
             token =  DigestUtils.md5Hex(token + salt);
             stringRedisTemplate.opsForValue().set("token:" + token, id, expireTime, TimeUnit.HOURS);
-            return ResponseEntity.ok(Map.of("data", Map.of("token", token, "id", id)));
+            // 聊天接入
+            String sig = tlsSigAPIv2.genUserSig(id, imExpireTime);
+            return ResponseEntity.ok(Map.of("data", Map.of("token", token,
+                    "id", id, "sig", sig)));
         }
     }
 
@@ -158,7 +175,9 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "更新成功"),
     })
     @PermissionConfirm
-    public ResponseEntity<Map<String , String >> updateUser(@PathVariable("id")Long id, String filedName, String value) {
+    public ResponseEntity<Map<String , String >> updateUser(@PathVariable("id")Long id, @RequestBody Map<String, String > data) {
+        String filedName = data.get("fieldName");
+        String value = data.get("value");
         switch  (filedName) {
             case "userName" -> {
                 if (userService.getUserByName(value) != null) {
@@ -174,6 +193,7 @@ public class UserController {
             case "signature" -> userService.updateSignature(id, value);
         }
         if (filedName.equals("userName") || filedName.equals("signature")) {
+            // 更新缓存
             final UserVo userVo = new UserVo();
             userVo.setId(id);
             userVo.setFiledValue(filedName, value);
@@ -212,5 +232,4 @@ public class UserController {
             return ResponseEntity.badRequest().body("token error");
         }
     }
-
 }

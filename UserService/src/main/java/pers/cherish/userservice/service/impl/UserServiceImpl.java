@@ -56,18 +56,7 @@ public class UserServiceImpl implements UserService {
 
         // 从base64中获取图片
         String img = userDTORegister.getProfile(); // base64数据
-        // 获取类型信息
-//        String[] parts = img.split(",");
-//        String mediaType = parts[0].split(":")[1];
-//        final String type = MimeTypeUtils.parseMimeType(mediaType).getSubtype();
-//        // 解码base64信息
-//        byte[] imageBytes = Base64.getDecoder().decode(parts[1]);
-//        // 尝试上传
-//        final String s1 = userDTORegister.getProfileId() + "." + type;
-//        final String s = cosTemplate.uploadBytes(imageBytes, s1);
-
         String s = cosTemplate.uploadProfile(userDTORegister.getProfile(), userDTORegister.getProfileId());
-//        System.out.println("UserServiceImpl.register = " + s);
         Profile profile = new Profile(userDTORegister.getProfileId(), userDTORegister.getId(), Date.from(Instant.now()));
         profileMapper.insert(profile);
         userMapper.insert(user);
@@ -149,11 +138,7 @@ public class UserServiceImpl implements UserService {
     public List<UserVo> searchUser(String key, int page) {
         int startIndex = (page-1) * 10;
         int endIndex = page * 10;
-        return userMapper.selectUserPage(key, startIndex, endIndex).stream().map(user -> {
-            UserVo userVo = new UserVo();
-            BeanUtils.copyProperties(user, userVo);
-            return userVo;
-        }).toList();
+        return userMapper.selectUserPage(key, startIndex, endIndex);
     }
     @Override
     @Deprecated

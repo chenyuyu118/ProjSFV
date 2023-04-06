@@ -14,8 +14,6 @@ public class Video {
     private String videoId;
     // 视频名称
     private String videoName;
-    // 视频url
-    private String videoUrl;
     // 视频作者id
     private Long authorId;
     // 视频长度，单位秒

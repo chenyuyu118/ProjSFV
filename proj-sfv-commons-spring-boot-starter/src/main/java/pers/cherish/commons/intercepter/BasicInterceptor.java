@@ -20,7 +20,7 @@ public class BasicInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         final String authorization = request.getHeader("token");
-        System.out.println("interceptor!");
+        System.out.println("interceptor!" + authorization);
         if (authorization == null) {
             final byte[] bytes = JSON.toJSONBytes(Map.of("message", "请先登陆"));
             response.setStatus(406);

@@ -17,17 +17,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pers.cherish.annotation.PermissionConfirm;
+import pers.cherish.response.MyResponse;
+import pers.cherish.userservice.domain.Relation;
 import pers.cherish.userservice.domain.UserBasicInfo;
 import pers.cherish.userservice.model.UserVo;
 import pers.cherish.userservice.service.FriendService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -272,13 +275,12 @@ public class FriendsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "成功"),
     })
-    public ResponseEntity<Object> deleteFromBlockedList(@PathVariable Long id, @RequestBody Map<String, String> req) {
+    public ResponseEntity<Object> setUserBlockedList(@PathVariable Long id, @RequestBody Map<String, String> req) {
         String message = req.get("message");
         switch (message) {
-            case "req" -> friendService.deleteFromBlockedList(id, Long.parseLong(req.get("id")));
-            case "free" -> friendService.addToBlockedList(id, Long.parseLong(req.get("id")));
+            case "free" -> friendService.deleteFromBlockedList(id, Long.parseLong(req.get("id")));
+            case "req" -> friendService.addToBlockedList(id, Long.parseLong(req.get("id")));
         }
-        friendService.deleteFromBlockedList(id, Long.parseLong(req.get("id")));
         return ResponseEntity.ok().body(Map.of("message", "success"));
     }
 
@@ -306,4 +308,22 @@ public class FriendsController {
         }
     }
 
+    // 获取用户相关的好友信息
+    @GetMapping("/relation/{id}/{otherId}")
+    @PermissionConfirm
+    public ResponseEntity<MyResponse<List<Boolean>>> getAllRelations(@PathVariable long id, @PathVariable long otherId) {
+        List<Boolean> result = new ArrayList<>();
+        //        String collectionName = id + "-follows";
+//        if (mongoTemplate.collectionExists(collectionName)) {
+//            boolean exists1 = mongoTemplate.exists(Query.query(where("id").is(otherId)), collectionName);
+//            result.add(0, exists1);
+//        } else {
+//
+//        }
+        Relation relation = friendService.getUserRelation(id, otherId);
+        result.add(0, relation.isFriend(id, otherId));
+        result.add(1, relation.isFollow(id, otherId));
+        result.add(2, friendService.isBlockedFriend(id, otherId));
+        return ResponseEntity.ok(MyResponse.ofData(result));
+    }
 }

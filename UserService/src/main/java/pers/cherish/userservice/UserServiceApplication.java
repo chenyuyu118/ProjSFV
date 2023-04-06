@@ -1,5 +1,6 @@
 package pers.cherish.userservice;
 
+import com.tencentyun.TLSSigAPIv2;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.HeaderParameter;
 import org.mybatis.spring.annotation.MapperScan;
@@ -68,6 +69,16 @@ public class UserServiceApplication {
     @LoadBalanced
     public RestTemplate restTemplate() {
         return new RestTemplate();
+    }
+
+
+    @Value("${im.sdkappid}")
+    private Long sdkappid;
+    @Value("${im.key}")
+    private String key;
+    @Bean
+    public TLSSigAPIv2 tlsSigAPIv2() {
+        return new TLSSigAPIv2(sdkappid, key);
     }
 
 }

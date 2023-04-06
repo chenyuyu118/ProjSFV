@@ -5,5 +5,12 @@
 
 <mapper namespace="pers.cherish.userservice.mapper.ProfileMapper">
 
-
+    <update id="updateProfileHistorical">
+        update t_profile
+        set register_time = current_timestamp
+        where id = #{profileId} and owner_id = #{id};
+        update t_user
+        set profile = #{profileId}
+        where id = #{id};
+    </update>
 </mapper>

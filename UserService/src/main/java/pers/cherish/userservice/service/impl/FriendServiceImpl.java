@@ -2,6 +2,7 @@ package pers.cherish.userservice.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pers.cherish.userservice.domain.Relation;
 import pers.cherish.userservice.domain.UserBasicInfo;
 import pers.cherish.userservice.mapper.FriendBlockedMapper;
 import pers.cherish.userservice.mapper.FriendMapper;
@@ -123,5 +124,12 @@ public class FriendServiceImpl implements FriendService {
         return friendBlockedMapper.getBlockedIdListForCache(id);
     }
 
+    public boolean isBlockedFriend(long id, long otherId) {
+        return friendBlockedMapper.isBlockedFriend(id, otherId);
+    }
 
+    @Override
+    public Relation getUserRelation(long id, long otherId) {
+        return friendMapper.getRelationWith(id, otherId);
+    }
 }

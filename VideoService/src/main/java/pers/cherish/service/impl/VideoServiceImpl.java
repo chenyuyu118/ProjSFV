@@ -1,5 +1,7 @@
 package pers.cherish.service.impl;
 
+import com.tencent.cloud.Credentials;
+import com.tencent.cloud.Response;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import pers.cherish.videoservice.model.Video;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class VideoServiceImpl implements VideoService {
@@ -47,19 +50,26 @@ public class VideoServiceImpl implements VideoService {
     }
 
     @Override
-    public String uploadVideo(VideoDTO videoDTO) {
+    public Map<String, Object> uploadVideo(VideoDTO videoDTO) {
         videoDTO.setSubmitTime(LocalDateTime.now());
         Video newVideo = new Video();
         BeanUtils.copyProperties(videoDTO, newVideo);
         // TODO id生成需要更新
         final Long videoId = stringRedisTemplate.opsForValue().increment(videoCounterKey);
         newVideo.setVideoId(String.valueOf(videoId));
-        final String imageUrl = cosTemplate.uploadImage(videoDTO.getProfile());
+        final String imageUrl = cosTemplate.uploadVideoProfile(videoDTO.getProfile(), videoId.toString());
         newVideo.setProfileUrl(imageUrl);
         videoMapper.insert(newVideo);
-        String key = videoId + ".mp4";
-        newVideo.setVideoUrl(key);
-        return cosTemplate.generatePreSignedUrl(key);
+        Response credentials = cosTemplate.generateCredential();
+        Map<String, Object> signedUrl = Map.of(
+                "token", credentials.credentials.sessionToken,
+                "tmpSecretId", credentials.credentials.tmpSecretId,
+                "tmpSecretKey", credentials.credentials.tmpSecretKey,
+                "expireTime", credentials.expiredTime,
+                "startTime", credentials.startTime,
+                "requestId", credentials.requestId,
+                "id", videoId + ".mp4");
+        return signedUrl;
     }
 
     @Override
@@ -73,7 +83,8 @@ public class VideoServiceImpl implements VideoService {
         if (videoDTOUpdate.getProfile() == null) {
             videoMapper.updateVideo(videoDTOUpdate);
         } else {
-            final String imageUrl = cosTemplate.uploadImage(videoDTOUpdate.getProfile());
+            final String imageUrl = cosTemplate.uploadVideoProfile(videoDTOUpdate.getProfile(),
+                    videoDTOUpdate.getVideoId().toString());
             videoDTOUpdate.setProfile(imageUrl);
             videoMapper.updateVideo(videoDTOUpdate);
         }

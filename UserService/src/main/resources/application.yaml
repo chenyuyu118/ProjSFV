@@ -5,10 +5,15 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_user
+    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_user?&allowMultiQueries=true
     type: com.alibaba.druid.pool.DruidDataSource
     username: cherish
     password: Yuchenyu1
+    druid:
+      filter:
+        wall:
+          config:
+            multi-statement-allow: true
   data:
     redis:
       host: r-uf62pi4o5awjt6sbqupd.redis.rds.aliyuncs.com
@@ -30,6 +35,8 @@ spring:
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+      username: nacos
+      password: 893494ycy.
 
 logging:
   level:
@@ -67,5 +74,11 @@ variable:
     user-follow-routing-key-prefix: 'user.follows.'
     user-register-routing-key: 'user.register'
     user-update-routing-key: 'user.update'
+  im:
+    expire-time: 86400 # 单位s
 aspect:
   type: user
+
+im:
+  sdkappid: 1400795083
+  key: 1ce369a7348fb9071d7bc5c31ad988e37874b71c381ad67e687f28a06f2126b5

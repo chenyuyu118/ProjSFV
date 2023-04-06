@@ -31,4 +31,12 @@
         from t_user_user_block
         where user1_id = #{id};
     </select>
+
+    <select id="isBlockedFriend" resultType="java.lang.Boolean">
+        select exists(
+            select *
+            from t_user_user_block
+            where user1_id = #{id} and user2_id = #{otherId}
+        );
+    </select>
 </mapper>

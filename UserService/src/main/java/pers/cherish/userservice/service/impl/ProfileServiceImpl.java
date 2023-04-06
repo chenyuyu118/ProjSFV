@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pers.cherish.commons.cos.COSTemplate;
 import pers.cherish.userservice.mapper.ProfileMapper;
+import pers.cherish.userservice.mapper.UserMapper;
 import pers.cherish.userservice.model.Profile;
 import pers.cherish.userservice.service.ProfileService;
 
@@ -17,6 +18,12 @@ import java.util.List;
 public class ProfileServiceImpl implements ProfileService {
     private ProfileMapper profileMapper;
     private COSTemplate cosTemplate;
+    private UserMapper userMapper;
+
+    @Autowired
+    public void setUserMapper(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @Autowired
     public void setProfileMapper(ProfileMapper profileMapper) {
@@ -31,25 +38,21 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional
     public void updateProfile(String  id, Long ownerId, String img) {
-//        int lastPointIndex = img.lastIndexOf(",");
-//        final byte[] bytes = Base64.decodeBase64(img.substring(lastPointIndex + 1));
-//        String imgType = img.substring(0, lastPointIndex); // jpg, png, gif
-//        final String s = cosTemplate.uploadBytes(bytes, id + "." + imgType);
         String s = cosTemplate.uploadProfile(img, id);
         if (s.equals("failed")) {
             throw new RuntimeException("上传失败");
         } else {
             profileMapper.insert(new Profile(id, ownerId, Date.from(Instant.now())));
+            userMapper.updateFiledById(ownerId, "profile", id);
         }
     }
 
     @Override
-    public List<String > getHistoricalProfiles(Long id) {
+    public List<Profile > getHistoricalProfiles(Long id) {
         final QueryWrapper<Profile> wrapper = new QueryWrapper<>();
         wrapper.eq("owner_id", id)
                 .orderBy(true, false, "register_time");
-        return profileMapper.selectList(wrapper).stream()
-                .map(Profile::getId).toList();
+        return profileMapper.selectList(wrapper);
     }
 
     @Override
@@ -58,5 +61,17 @@ public class ProfileServiceImpl implements ProfileService {
         wrapper.eq("owner_id", id)
                 .orderBy(true, false, "register_time");
         return profileMapper.selectList(wrapper).get(0).getId();
+    }
+
+    @Override
+    public boolean isExist(Long id, String profileId) {
+        QueryWrapper<Profile> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("owner_id", id).eq("id", profileId);
+        return profileMapper.exists(queryWrapper);
+    }
+
+    @Override
+    public void updateProfileHistorical(Long id, String profileId) {
+        profileMapper.updateProfileHistorical(id, profileId);
     }
 }

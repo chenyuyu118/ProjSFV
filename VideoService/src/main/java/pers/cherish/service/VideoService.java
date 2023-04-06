@@ -1,15 +1,17 @@
 package pers.cherish.service;
 
+import com.tencent.cloud.Credentials;
 import pers.cherish.domain.VideoDTO;
 import pers.cherish.domain.VideoDTOUpdate;
 import pers.cherish.videoservice.model.Video;
 
 import java.util.List;
+import java.util.Map;
 
 public interface VideoService {
 
     // 上传视频，返回签名
-    String uploadVideo(VideoDTO videoDTO);
+    Map<String, Object > uploadVideo(VideoDTO videoDTO);
 
     // 删除视频
     void deleteVideo(String videoId);

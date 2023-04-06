@@ -1,10 +1,12 @@
 package pers.cherish.userservice.service;
 
 import org.springframework.stereotype.Service;
+import pers.cherish.userservice.domain.Relation;
 import pers.cherish.userservice.domain.UserBasicInfo;
 import pers.cherish.userservice.model.UserVo;
 
 import java.util.List;
+
 
 @Service
 public interface FriendService {
@@ -50,4 +52,7 @@ public interface FriendService {
         REQ, REJECT, ACCEPT, DELETE
     }
 
+    public boolean isBlockedFriend(long id, long otherId);
+
+    Relation getUserRelation(long id, long otherId);
 }

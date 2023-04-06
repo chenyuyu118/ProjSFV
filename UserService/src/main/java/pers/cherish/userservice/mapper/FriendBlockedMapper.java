@@ -16,4 +16,6 @@ public interface FriendBlockedMapper {
     List<UserVo> getBlockedPage(Long id, int startIndex, int endIndex);
 
     List<Long> getBlockedIdListForCache(Long id);
+
+    boolean isBlockedFriend(long id, long otherId);
 }
