@@ -2,9 +2,14 @@ spring:
   datasource:
     username: cherish
     password: Yuchenyu1
-    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_video
+    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_video?&allowMultiQueries=true
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      filter:
+        wall:
+          config:
+            multi-statement-allow: true
   data:
     redis:
       host: r-uf62pi4o5awjt6sbqupd.redis.rds.aliyuncs.com
@@ -41,7 +46,7 @@ variable:
     video-like-page-size: 20
     video-collect-page-size: 20
   exclude-token-path: "/swagger-ui.html,/swagger-resources/**,
-  /webjars/**,/swagger-ui/*,/v3/**,/video/*"
+  /webjars/**,/swagger-ui/*,/v3/**,/video/*,/video/my/*,/video/search/*"
   public-path: "/user/login,/user"
 
 cos:

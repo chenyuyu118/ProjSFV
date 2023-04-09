@@ -13,8 +13,7 @@
 
     <update id="updateVideo">
         update t_video
-        set profile_url = #{profile},
-            video_name = #{videoName},
+        set video_name = #{videoName},
             tags = #{tags},
             is_published = #{isPublished},
             description = #{description}
@@ -44,6 +43,13 @@
         select * from t_video
         order by rand()
         limit 1
+    </select>
+
+    <select id="selectMyVideos" resultType="pers.cherish.domain.VideoVo">
+        select video_id, video_name, profile_url, tags
+        from t_video
+        where author_id = #{id} and is_deleted = false
+        limit #{startIndex}, #{endIndex};
     </select>
 
 

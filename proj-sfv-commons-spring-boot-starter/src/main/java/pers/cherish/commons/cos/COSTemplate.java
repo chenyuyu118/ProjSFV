@@ -105,12 +105,12 @@ public class COSTemplate {
         final BufferedImage image;
         try {
             image = ImageIO.read(new ByteArrayInputStream(imageBytes));
-            final String s1 = id + ".jpeg";
-            File newImage = File.createTempFile(UUID.randomUUID().toString(), ".jpeg");
+            final String s1 = UUID.randomUUID().toString();
+            File newImage = File.createTempFile(s1, ".jpeg");
             ImageIO.write(image, "jpeg", newImage);
-            String s = this.uploadFile(cosProperties.getVideoBucket(), newImage, s1);
+            String s = this.uploadFile(cosProperties.getVideoBucket(), newImage, s1 + ".jpeg");
             newImage.delete();
-            return s;
+            return s1;
         } catch (IOException e) {
             System.out.println("upload failed");
         }
@@ -198,5 +198,9 @@ public class COSTemplate {
             result = null;
         }
         return result;
+    }
+
+    public String uploadMaterial(String key, File f) {
+        return this.uploadFile(cosProperties.getMaterialBucket(), f, key);
     }
 }

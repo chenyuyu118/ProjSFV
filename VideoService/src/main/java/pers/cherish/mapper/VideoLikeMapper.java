@@ -16,6 +16,8 @@ public interface VideoLikeMapper {
     Long getLkeCount(String videoId);
 
     boolean isLike(Long userId, String videoId);
+    boolean isDislike(long userId, String videoId);
+
 
     List<VideoVo> getLikeVideo(Long userId, int startIndex, int endIndex);
 

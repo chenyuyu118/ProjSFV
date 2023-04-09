@@ -19,7 +19,7 @@ public class Comment {
     // 评论作者
     private Long authorId;
     // 评论内容
-    private String content;
+    private byte[] content;
     // 点赞数目
     private Long likeCount;
     // 点踩数目

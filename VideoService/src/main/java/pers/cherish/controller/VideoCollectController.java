@@ -130,4 +130,12 @@ public class VideoCollectController {
         videoCollectService.updateCollector(userId, videoDTOUpdate.getCategory(), videoDTOUpdate.getNewCategory());
         return ResponseEntity.ok(MyResponse.ofMessage("修改收藏类目名称成功"));
     }
+
+    // 获取是否收藏
+    @GetMapping("/test/{userId}/{videoId}")
+    @PermissionConfirm
+    public ResponseEntity<MyResponse<Boolean>> getIsCollect(@PathVariable Long userId,
+                                                            @PathVariable String videoId) {
+        return ResponseEntity.ok(MyResponse.ofData(videoCollectService.isCollectVideo(userId, videoId)));
+    }
 }

@@ -3,6 +3,8 @@ package pers.cherish.service;
 import com.tencent.cloud.Credentials;
 import pers.cherish.domain.VideoDTO;
 import pers.cherish.domain.VideoDTOUpdate;
+import pers.cherish.domain.VideoVo;
+import pers.cherish.userservice.model.UserVo;
 import pers.cherish.videoservice.model.Video;
 
 import java.util.List;
@@ -30,4 +32,6 @@ public interface VideoService {
     boolean isVideoExist(String videoId);
 
     List<Video> getRandomVideo();
+
+    List<VideoVo> getMyVideos(long id, int page);
 }

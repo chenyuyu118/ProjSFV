@@ -3,6 +3,7 @@ package pers.cherish.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import pers.cherish.domain.VideoDTOUpdate;
+import pers.cherish.domain.VideoVo;
 import pers.cherish.videoservice.model.Video;
 
 import java.util.List;
@@ -22,4 +23,6 @@ public interface VideoMapper extends BaseMapper<Video> {
     boolean isVideoExist(String videoId);
 
     Video getRandomVideo();
+
+    List<VideoVo> selectMyVideos(long id, int startIndex, int endIndex);
 }

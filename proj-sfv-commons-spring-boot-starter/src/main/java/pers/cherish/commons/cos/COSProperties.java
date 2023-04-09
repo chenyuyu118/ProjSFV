@@ -12,6 +12,7 @@ public class COSProperties {
     private String secretKey;
     private String region;
     private String profileBucket;
+    private String materialBucket;
 
     private String videoBucket;
     private String endpoint;
@@ -19,6 +20,14 @@ public class COSProperties {
     private String url;
     private String accessKey;
     private String accessSecret;
+
+    public String getMaterialBucket() {
+        return materialBucket;
+    }
+
+    public void setMaterialBucket(String materialBucket) {
+        this.materialBucket = materialBucket;
+    }
 
     public String getSecretId() {
         return secretId;

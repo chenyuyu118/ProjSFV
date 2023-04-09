@@ -46,6 +46,11 @@ public class VideoLikeServiceImpl implements VideoLikeService {
     }
 
     @Override
+    public boolean isDislike(long userId, String videoId) {
+        return videoLikeMapper.isDislike(userId, videoId);
+    }
+
+    @Override
     public List<VideoVo> getLikeVideo(Long userId, int k) {
         int startIndex = (k - 1) * videoLikePageSize;
         int endIndex = k * videoLikePageSize;

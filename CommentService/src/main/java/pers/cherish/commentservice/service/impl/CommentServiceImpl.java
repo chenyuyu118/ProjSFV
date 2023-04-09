@@ -10,6 +10,7 @@ import pers.cherish.commentservice.domain.CommentTreeNode;
 import pers.cherish.commentservice.mapper.CommentMapper;
 import pers.cherish.commentservice.service.CommentService;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -51,19 +52,41 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void publishComment(String videoId, String content, Long userId, Long parentId) {
+    public CommentTreeNode publishComment(String videoId, String content, Long userId, Long parentId) {
         final Long commentId = generateCommentId();
-        final Comment comment = new Comment(videoId, commentId, userId, content,
+        final Comment comment = new Comment(videoId, commentId, userId, content.getBytes(StandardCharsets.UTF_8),
                 0L, 0L, LocalDateTime.now(), false, parentId, null);
         commentMapper.insert(comment);
+        return CommentTreeNode.builder()
+                .commentId(commentId)
+                .content(content)
+                .commentTime(comment.getCommentTime())
+                .likeCount(0L)
+                .authorId(userId)
+                .child(null)
+                .parentId(parentId)
+                .replyId(0L)
+                .isDeleted(false)
+                .build();
     }
 
     @Override
-    public void publishComment(String videoId, String content, Long userId, Long parentId, Long replyId) {
+    public CommentTreeNode publishComment(String videoId, String content, Long userId, Long parentId, Long replyId) {
         final Long commentId = generateCommentId();
-        final Comment comment = new Comment(videoId, commentId, userId, content,
+        final Comment comment = new Comment(videoId, commentId, userId, content.getBytes(StandardCharsets.UTF_8),
                 0L, 0L, LocalDateTime.now(), false, parentId, replyId);
         commentMapper.insert(comment);
+        return CommentTreeNode.builder()
+                .commentId(commentId)
+                .content(content)
+                .commentTime(comment.getCommentTime())
+                .likeCount(0L)
+                .authorId(userId)
+                .child(null)
+                .parentId(parentId)
+                .replyId(replyId)
+                .isDeleted(false)
+                .build();
     }
 
     @Override

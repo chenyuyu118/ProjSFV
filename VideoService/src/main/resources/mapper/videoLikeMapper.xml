@@ -8,19 +8,31 @@
 
     <insert id="like">
         insert into t_user_video_like (video_id, user_id, time)
-        values (#{videoId}, #{userId}, #{time})
+        values (#{videoId}, #{userId}, #{time});
+        update t_video
+        set like_count = like_count + 1
+        where video_id = #{videoId};
     </insert>
     <insert id="dislike">
         insert into t_user_video_dislike (video_id, user_id, time)
-        values (#{videoId}, #{userId}, #{time})
+        values (#{videoId}, #{userId}, #{time});
+        update t_video
+        set dislike_count = dislike_count + 1
+        where video_id = #{videoId};
     </insert>
     <delete id="cancelLike">
         delete from t_user_video_like
-        where video_id = #{videoId} and user_id = #{userId}
+        where video_id = #{videoId} and user_id = #{userId};
+        update t_video
+        set like_count = like_count - 1
+        where video_id = #{videoId};
     </delete>
     <delete id="cancelDislike">
         delete from t_user_video_dislike
-        where video_id = #{videoId} and user_id = #{userId}
+        where video_id = #{videoId} and user_id = #{userId};
+        update t_video
+        set dislike_count = dislike_count - 1
+        where video_id = #{videoId};
     </delete>
     <select id="getLkeCount" resultType="java.lang.Long">
         select count(*) from t_user_video_like
@@ -29,6 +41,10 @@
     <select id="isLike" resultType="java.lang.Boolean">
         select exists(select * from t_user_video_like
         where video_id = #{videoId} and user_id = #{userId})
+    </select>
+    <select id="isDislike" resultType="java.lang.Boolean">
+        select exists(select * from t_user_video_dislike
+                      where video_id = #{videoId} and user_id = #{userId})
     </select>
     <select id="getLikeVideo" resultType="pers.cherish.domain.VideoVo">
         select t2.video_id, t2.video_name, t2.tags, t2.profile_url

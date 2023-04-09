@@ -33,6 +33,12 @@
         from t_user_video_collect, t_video t2
         where user_id = #{userId} and collector = #{collector} and t_user_video_collect.video_id = t2.video_id
     </select>
-
+    <select id="isCollectVideo" resultType="java.lang.Boolean">
+        select exists(
+            select *
+            from t_user_video_collect
+            where user_id = #{userId} and video_id = #{videoId}
+        );
+    </select>
 
 </mapper>

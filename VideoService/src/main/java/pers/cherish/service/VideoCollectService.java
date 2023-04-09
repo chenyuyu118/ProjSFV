@@ -17,4 +17,6 @@ public interface VideoCollectService {
     void deleteCollector(Long userId, String category);
     // 修改收藏类目
     void updateCollector(Long userId, String category, String newCategory);
+
+    boolean isCollectVideo(long userId, String videoId);
 }

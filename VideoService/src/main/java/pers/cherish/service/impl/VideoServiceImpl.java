@@ -1,5 +1,6 @@
 package pers.cherish.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.tencent.cloud.Credentials;
 import com.tencent.cloud.Response;
 import org.springframework.beans.BeanUtils;
@@ -10,8 +11,10 @@ import org.springframework.stereotype.Service;
 import pers.cherish.commons.cos.COSTemplate;
 import pers.cherish.domain.VideoDTO;
 import pers.cherish.domain.VideoDTOUpdate;
+import pers.cherish.domain.VideoVo;
 import pers.cherish.mapper.VideoMapper;
 import pers.cherish.service.VideoService;
+import pers.cherish.userservice.model.UserVo;
 import pers.cherish.videoservice.model.Video;
 
 import java.time.LocalDateTime;
@@ -54,6 +57,7 @@ public class VideoServiceImpl implements VideoService {
         videoDTO.setSubmitTime(LocalDateTime.now());
         Video newVideo = new Video();
         BeanUtils.copyProperties(videoDTO, newVideo);
+        System.out.println(newVideo);
         // TODO id生成需要更新
         final Long videoId = stringRedisTemplate.opsForValue().increment(videoCounterKey);
         newVideo.setVideoId(String.valueOf(videoId));
@@ -83,7 +87,8 @@ public class VideoServiceImpl implements VideoService {
         if (videoDTOUpdate.getProfile() == null) {
             videoMapper.updateVideo(videoDTOUpdate);
         } else {
-            final String imageUrl = cosTemplate.uploadVideoProfile(videoDTOUpdate.getProfile(),
+            String[] parts = videoDTOUpdate.getProfile().split(",");
+            final String imageUrl = cosTemplate.uploadVideoProfile(parts[1],
                     videoDTOUpdate.getVideoId().toString());
             videoDTOUpdate.setProfile(imageUrl);
             videoMapper.updateVideo(videoDTOUpdate);
@@ -127,5 +132,12 @@ public class VideoServiceImpl implements VideoService {
         randomVideo = videoMapper.getRandomVideo();
         list.add(randomVideo);
         return list;
+    }
+
+    @Override
+    public List<VideoVo> getMyVideos(long id, int page) {
+        int startIndex = (page - 1) * videoPageSize;
+        int endIndex = page * videoPageSize;
+        return videoMapper.selectMyVideos(id, startIndex, endIndex);
     }
 }

@@ -98,6 +98,22 @@ public class VideoLikeController {
                 ofData(videoLikeService.isLike(userId, videoId)));
     }
 
+    // 获取用户是否点踩
+    @GetMapping("dislike/test/{userId}/{videoId}")
+    @PermissionConfirm
+    @Operation(summary = "获取用户是否点踩")
+    @ApiResponses(
+            value = {
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "获取用户是否点赞成功"),
+                    @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "获取用户是否点赞失败")
+            }
+    )
+    public ResponseEntity<MyResponse<Boolean>> isDisLike(@PathVariable long userId, @PathVariable String videoId) {
+        return ResponseEntity.ok(MyResponse.
+                ofData(videoLikeService.isDislike(userId, videoId)));
+    }
+
+
     // 获取用户点赞的第k页视频
     @GetMapping("/{userId}/{k}")
     @Operation(summary = "获取用户点赞的第k页视频")

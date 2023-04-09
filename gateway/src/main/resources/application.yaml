@@ -20,6 +20,10 @@ spring:
           uri: lb://comment-service
           predicates:
             - Path=/comment/**
+        - id: material-service
+          uri: lb://material-service
+          predicates:
+            - Path=/material/**
       globalcors:
         cors-configurations:
           '[/**]':

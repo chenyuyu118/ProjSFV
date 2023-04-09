@@ -9,10 +9,10 @@ import java.util.List;
 public interface CommentService {
     // 发布评论
 
-    void publishComment(String videoId, String content, Long userId,
+    CommentTreeNode publishComment(String videoId, String content, Long userId,
                         Long parentId);
 
-    void publishComment(String videoId, String content, Long userId,
+    CommentTreeNode publishComment(String videoId, String content, Long userId,
                         Long parentId, Long replyId);
     // 删除评论
     void deleteComment(String  videoId, Long commentId, Long authorId);

@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pers.cherish.annotation.PermissionConfirm;
 import pers.cherish.domain.VideoDTO;
 import pers.cherish.domain.VideoDTOUpdate;
+import pers.cherish.domain.VideoVo;
 import pers.cherish.response.MyResponse;
 import pers.cherish.service.VideoService;
 import pers.cherish.videoservice.model.Video;
@@ -51,7 +53,6 @@ public class VideoController {
     public ResponseEntity<MyResponse<Map<String, Object>>> uploadVideo(@RequestBody VideoDTO videoDTO,
                                                                        @Parameter(hidden = true) HttpServletRequest request) {
         final String token = request.getHeader("token");
-        System.out.println(token);
         final Long s = Long.valueOf(Objects.requireNonNull(stringRedisTemplate.opsForValue().get("token:" + token)));
         if (!Objects.equals(s, videoDTO.getAuthorId()))
             return ResponseEntity.status(406).body(MyResponse.ofMessage("没有操作权限"));
@@ -60,7 +61,7 @@ public class VideoController {
     }
 
     // 删除视频
-    @PostMapping("/delete/{videoId}")
+    @DeleteMapping("/{videoId}")
     @Operation(summary = "删除视频", description = "删除视频")
     @ApiResponses(
             value = {
@@ -166,5 +167,12 @@ public class VideoController {
     )
     public ResponseEntity<MyResponse<List<Video>>> getRandomVideo() {
         return ResponseEntity.ok(MyResponse.ofData(videoService.getRandomVideo()));
+    }
+
+    @GetMapping("/my/{id}")
+    @PermissionConfirm
+    public ResponseEntity<MyResponse<List<VideoVo>>> getMyVideos(@PathVariable Long id,
+                                                                 @RequestParam(required = false, defaultValue = "1") int page) {
+        return ResponseEntity.ok(MyResponse.ofData(videoService.getMyVideos(id, page)));
     }
 }

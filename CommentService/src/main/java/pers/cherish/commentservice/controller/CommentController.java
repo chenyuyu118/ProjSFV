@@ -37,15 +37,16 @@ public class CommentController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "发布成功"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "发布失败")
     })
-    public ResponseEntity<MyResponse<Void>> publishComment(@PathVariable Long userId,
+    public ResponseEntity<MyResponse<CommentTreeNode>> publishComment(@PathVariable Long userId,
                                                            @RequestBody CommentDTO commentDTO) {
+        CommentTreeNode newNode;
         if (commentDTO.getReplyId() == null)
-            commentService.publishComment(commentDTO.getVideoId(), commentDTO.getContent(), userId,
+            newNode = commentService.publishComment(commentDTO.getVideoId(), commentDTO.getContent(), userId,
                     commentDTO.getParentId());
         else
-            commentService.publishComment(commentDTO.getVideoId(), commentDTO.getContent(), commentDTO.getAuthorId(),
+            newNode = commentService.publishComment(commentDTO.getVideoId(), commentDTO.getContent(), commentDTO.getAuthorId(),
                 commentDTO.getParentId(), commentDTO.getReplyId());
-        return ResponseEntity.ok(MyResponse.ofMessage("发布成功"));
+        return ResponseEntity.ok(MyResponse.ofData(newNode));
     }
 
     // 删除评论

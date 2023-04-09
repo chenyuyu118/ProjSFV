@@ -13,7 +13,7 @@ public interface VideoLikeService {
     Long getLikeCount(String videoId);
     // 获取用户是否点赞
     boolean isLike(Long userId, String videoId);
-
+    boolean isDislike(long userId, String videoId);
 
     // 获取用户点赞的第k页视频
     List<VideoVo> getLikeVideo(Long userId, int k);

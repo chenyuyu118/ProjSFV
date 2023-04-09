@@ -19,4 +19,6 @@ public interface VideoCollectMapper {
     void deleteCollector(Long userId, String collector);
 
     void updateCollector(Long userId, String collector, String newCollector);
+
+    boolean isCollectVideo(long userId, String videoId);
 }

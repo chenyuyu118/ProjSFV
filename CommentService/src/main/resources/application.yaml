@@ -18,6 +18,8 @@ spring:
   cloud:
     nacos:
       server-addr: localhost:8848
+      username: nacos
+      password: 893494ycy.
   application:
     name: comment-service
 logging:

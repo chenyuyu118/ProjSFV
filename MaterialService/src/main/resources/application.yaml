@@ -1,0 +1,43 @@
+server:
+  port: 8086
+  servlet:
+    context-path: /
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_material?&allowMultiQueries=true
+    type: com.alibaba.druid.pool.DruidDataSource
+    username: cherish
+    password: Yuchenyu1
+    druid:
+      filter:
+        wall:
+          config:
+            multi-statement-allow: true
+  application:
+    name: material-service
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      username: nacos
+      password: 893494ycy.
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 400000000
+      max-request-size: 400000000
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+cos:
+  secret-id: AKIDzrcEgv68C3iDWcZLvKXflkW5RfocIl15
+  secret-key: tXyBAwUrY2JQl4BB1hASZSBjw2ykPtMi
+  region: ap-nanjing
+  profile-bucket: user-profile-1308753508
+  material-bucket: material-1308753508
+
+logging:
+  level:
+    sql: trace
+    web: trace

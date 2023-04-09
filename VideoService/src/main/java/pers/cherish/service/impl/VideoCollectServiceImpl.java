@@ -53,4 +53,9 @@ public class VideoCollectServiceImpl implements VideoCollectService {
     public void updateCollector(Long userId, String category, String newCategory) {
         videoCollectMapper.updateCollector(userId, category, newCategory);
     }
+
+    @Override
+    public boolean isCollectVideo(long userId, String videoId) {
+        return videoCollectMapper.isCollectVideo(userId, videoId);
+    }
 }

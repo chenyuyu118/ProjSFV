@@ -16,6 +16,8 @@
         <module>gateway</module>
         <module>RecommandService</module>
         <module>MaterialService</module>
+        <module>UserService</module>
+        <module>CommentService</module>
     </modules>
     <groupId>pers.cherish</groupId>
     <artifactId>ProjSFV</artifactId>
@@ -29,6 +31,15 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-jpa</artifactId>
+                <version>3.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframwork.boot</groupId>
+                <artifactId>spring-boot-stater-data-jpa</artifactId>
+            </dependency>
             <dependency>
                 <groupId>com.qcloud</groupId>
                 <artifactId>cos-sts_api</artifactId>
