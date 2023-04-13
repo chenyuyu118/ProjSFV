@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.scripting.ScriptSource;
+import org.springframework.scripting.support.ResourceScriptSource;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,4 +45,18 @@ public class VideoServiceApplication {
         };
     }
 
+    @Bean(name = "getIsLike")
+    public RedisScript<List> getIsLike() {
+        return RedisScript.of(new ClassPathResource("scripts/is_like.lua"), List.class);
+    }
+
+    @Bean(name = "getIsDislike")
+    public RedisScript<List> getIsDislike() {
+        return RedisScript.of(new ClassPathResource("scripts/is_dislike.lua"), List.class);
+    }
+
+    @Bean(name = "getIsCollect")
+    public RedisScript<List> getIsCollect() {
+        return RedisScript.of(new ClassPathResource("scripts/is_collect.lua"), List.class);
+    }
 }

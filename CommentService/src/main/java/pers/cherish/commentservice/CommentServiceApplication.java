@@ -6,6 +6,11 @@ import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.redis.core.script.RedisScript;
+
+import java.util.List;
+import java.util.Set;
 
 @SpringBootApplication
 
@@ -30,5 +35,10 @@ public class CommentServiceApplication {
                     )
                     );
         };
+    }
+
+    @Bean(name = "getCommentIsLike")
+    public RedisScript<List> getCommentIsLike() {
+        return RedisScript.of(new ClassPathResource("scripts/comment_isLike.lua"), List.class);
     }
 }

@@ -21,6 +21,9 @@ public interface VideoLikeMapper {
 
     List<VideoVo> getLikeVideo(Long userId, int startIndex, int endIndex);
 
+    List<String > getAllLike(Long userId);
+    List<String > getAllDislike(Long userId);
+
     List<VideoVo> getDislikeVideo(Long userId, int startIndex, int endIndex);
 
     void dislike(Long userId, String videoId, LocalDateTime time);

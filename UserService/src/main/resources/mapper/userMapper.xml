@@ -26,5 +26,11 @@
         select id, profile, user_name, signature, gender, current_address, is_deleted
         from t_user;
     </select>
-
+    <select id="getUserProfileRange" resultType="pers.cherish.userservice.model.UserVo">
+        select id, profile, user_name, signature, gender, current_address, is_deleted from t_user
+        where id in
+        <foreach collection="userIds" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

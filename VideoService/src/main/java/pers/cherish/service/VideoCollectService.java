@@ -2,6 +2,7 @@ package pers.cherish.service;
 
 import pers.cherish.domain.VideoVo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface VideoCollectService {
@@ -19,4 +20,8 @@ public interface VideoCollectService {
     void updateCollector(Long userId, String category, String newCategory);
 
     boolean isCollectVideo(long userId, String videoId);
+
+    List<Boolean> getIsCollect(Long userId, ArrayList<String> ids);
+
+    List<String> getAllCollectVideoIds(Long userId);
 }

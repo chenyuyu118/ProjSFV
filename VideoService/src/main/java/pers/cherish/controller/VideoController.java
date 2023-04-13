@@ -175,4 +175,6 @@ public class VideoController {
                                                                  @RequestParam(required = false, defaultValue = "1") int page) {
         return ResponseEntity.ok(MyResponse.ofData(videoService.getMyVideos(id, page)));
     }
+
+
 }

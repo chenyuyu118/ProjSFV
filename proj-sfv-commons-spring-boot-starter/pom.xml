@@ -7,6 +7,7 @@
         <groupId>pers.cherish</groupId>
         <artifactId>ProjSFV</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -21,6 +22,7 @@
             <groupId>pers.cherish</groupId>
             <artifactId>model</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <classifier>exec</classifier>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -59,4 +61,23 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>pers.cherish.commons.MainClass</mainClass>
+                    <classifier>exec</classifier>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

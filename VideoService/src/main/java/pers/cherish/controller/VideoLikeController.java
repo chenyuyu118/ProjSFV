@@ -5,6 +5,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pers.cherish.annotation.PermissionConfirm;
@@ -13,7 +19,9 @@ import pers.cherish.response.MyResponse;
 import pers.cherish.service.VideoLikeService;
 import pers.cherish.service.VideoService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/video/like")
@@ -23,8 +31,21 @@ import java.util.List;
 )
 public class VideoLikeController {
 
+    @Value("${variable.page.video-like-page-size}")
+    private int videoLikePageSize;
+    @Value("${variable.redis.video-like-key-prefix}")
+    private String videoLikeKeyPrefix;
+    @Value("${variable.redis.video-dislike-key-prefix}")
+    private String videoDislikeKeyPrefix;
+
     private VideoLikeService videoLikeService;
     private VideoService videoService;
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    public void setStringRedisTemplate(StringRedisTemplate stringRedisTemplate) {
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     @Autowired
     public void setVideoService(VideoService videoService) {
@@ -51,6 +72,8 @@ public class VideoLikeController {
             return ResponseEntity.badRequest().body(MyResponse.ofMessage("视频不存在"));
         }
         videoLikeService.like(userId, videoId);
+        String key = videoLikeKeyPrefix + userId;
+        stringRedisTemplate.opsForZSet().add(key, videoId, System.currentTimeMillis());
         return ResponseEntity.ok(MyResponse.ofMessage("点赞成功"));
     }
 
@@ -66,6 +89,8 @@ public class VideoLikeController {
     )
     public ResponseEntity<MyResponse<Void>> cancelLike(@PathVariable Long userId, @RequestBody String videoId) {
         videoLikeService.cancelLike(userId, videoId);
+        String key = videoLikeKeyPrefix + userId;
+        stringRedisTemplate.opsForZSet().remove(key, videoId);
         return ResponseEntity.ok(MyResponse.ofMessage("取消点赞成功"));
     }
 
@@ -139,6 +164,13 @@ public class VideoLikeController {
             }
     )
     public ResponseEntity<MyResponse<List<VideoVo>>> getDislikeVideo(@PathVariable Long userId, @PathVariable int k) {
+        // TODO 这里结合redis缓存来做
+//        String key = videoDislikeKeyPrefix + userId;
+//        if (stringRedisTemplate.hasKey(key)) {
+//            int startIndex = (k - 1) * videoLikePageSize;
+//            int endIndex = k * videoLikePageSize;
+//            Set<String> rangeIds = stringRedisTemplate.opsForZSet().range(key, startIndex, endIndex);
+//        }
         return ResponseEntity.ok(MyResponse.
                 ofData(videoLikeService.getDislikeVideo(userId, k)));
     }
@@ -158,6 +190,8 @@ public class VideoLikeController {
             return ResponseEntity.badRequest().body(MyResponse.ofMessage("视频不存在"));
         }
         videoLikeService.dislike(userId, videoId);
+        String key = videoDislikeKeyPrefix + userId;
+        stringRedisTemplate.opsForZSet().add(key, videoId, System.currentTimeMillis());
         return ResponseEntity.ok(MyResponse.ofMessage("点踩成功"));
     }
 
@@ -173,6 +207,69 @@ public class VideoLikeController {
     )
     public ResponseEntity<MyResponse<Void>> cancelDislike(@PathVariable Long userId, @RequestBody String videoId) {
         videoLikeService.cancelDislike(userId, videoId);
+        String key = videoDislikeKeyPrefix + userId;
+        stringRedisTemplate.opsForZSet().remove(key, videoId);
         return ResponseEntity.ok(MyResponse.ofMessage("取消点踩成功"));
     }
+
+    private RedisScript<List> getIsLike;
+    private RedisScript<List> getIsDislike;
+
+    @Autowired
+    @Qualifier("getIsLike")
+    public void setGetIsLike(RedisScript getIsLike) {
+        this.getIsLike = getIsLike;
+    }
+
+    @Autowired
+    @Qualifier("getIsDislike")
+    public void setGetIsDislike(RedisScript getIsDislike) {
+        this.getIsDislike = getIsDislike;
+    }
+
+
+    // 获取一批视频是否点赞
+    @GetMapping("/test/{userId}")
+    @PermissionConfirm
+    public ResponseEntity<MyResponse<List<Boolean>>> getIsLike(@RequestParam("ids") ArrayList<String> ids,
+                                                               @PathVariable long userId) {
+        String key = videoLikeKeyPrefix + userId;
+        ArrayList<Boolean> result = new ArrayList<>();
+        if (stringRedisTemplate.hasKey(key)) {
+            List list = stringRedisTemplate.execute(getIsLike, List.of(key, key+":tmp", key+":tmp2"), ids.toArray());
+            for (int i = 0; i < ids.size(); ++i) {
+                if (list.contains(ids.get(i))) {
+                    result.add(i, true);
+                } else {
+                    result.add(i, false);
+                }
+            }
+        } else {
+            result = videoLikeService.getIsLike(userId, ids);
+        }
+        return ResponseEntity.ok(MyResponse.ofData(result));
+    }
+
+    // 获取一批视频是否点踩
+    @GetMapping("/dislike/test/{userId}")
+    public ResponseEntity<MyResponse<List<Boolean>>> getIsDislike(@RequestParam("ids") ArrayList<String> ids,
+                                                                  @PathVariable long userId) {
+        String key = videoDislikeKeyPrefix + userId;
+        ArrayList<Boolean> result = new ArrayList<>();
+        if (stringRedisTemplate.hasKey(key)) {
+            List list = stringRedisTemplate.execute(getIsLike, List.of(key, key+":tmp", key+":tmp1"), ids.toArray());
+            for (int i = 0; i < ids.size(); ++i) {
+                if (list.contains(ids.get(i))) {
+                    result.add(i, true);
+                } else {
+                    result.add(i, false);
+                }
+            }
+        } else {
+            result = videoLikeService.getIsDisLike(userId, ids);
+        }
+        return ResponseEntity.ok(MyResponse.ofData(result));
+    }
+
+
 }

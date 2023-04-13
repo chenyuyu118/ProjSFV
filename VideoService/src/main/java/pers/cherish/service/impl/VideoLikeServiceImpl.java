@@ -8,6 +8,7 @@ import pers.cherish.mapper.VideoLikeMapper;
 import pers.cherish.service.VideoLikeService;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -72,5 +73,29 @@ public class VideoLikeServiceImpl implements VideoLikeService {
     @Override
     public void cancelDislike(Long userId, String videoId) {
         videoLikeMapper.cancelDislike(userId, videoId);
+    }
+
+    @Override
+    public ArrayList<Boolean> getIsLike(long userId, ArrayList<String> ids) {
+        List<String > allLike = videoLikeMapper.getAllLike(userId);
+        return analyzeLike(ids, allLike);
+    }
+
+    @Override
+    public ArrayList<Boolean> getIsDisLike(long userId, ArrayList<String> ids) {
+        List<String > allLike = videoLikeMapper.getAllDislike(userId);
+        return analyzeLike(ids, allLike);
+    }
+
+    private ArrayList<Boolean> analyzeLike(ArrayList<String> ids, List<String> allLike) {
+        ArrayList<Boolean> result = new ArrayList<>();
+        for (int i = 0; i < ids.size(); i++) {
+            if (allLike.contains(ids.get(i))) {
+                result.add(i, true);
+            } else  {
+                result.add(i, false);
+            }
+        }
+        return result;
     }
 }

@@ -312,15 +312,9 @@ public class FriendsController {
     @GetMapping("/relation/{id}/{otherId}")
     @PermissionConfirm
     public ResponseEntity<MyResponse<List<Boolean>>> getAllRelations(@PathVariable long id, @PathVariable long otherId) {
-        List<Boolean> result = new ArrayList<>();
-        //        String collectionName = id + "-follows";
-//        if (mongoTemplate.collectionExists(collectionName)) {
-//            boolean exists1 = mongoTemplate.exists(Query.query(where("id").is(otherId)), collectionName);
-//            result.add(0, exists1);
-//        } else {
-//
-//        }
         Relation relation = friendService.getUserRelation(id, otherId);
+        if (relation == null) return ResponseEntity.ok(MyResponse.ofData(List.of(false, false, false)));
+        List<Boolean> result = new ArrayList<>();
         result.add(0, relation.isFriend(id, otherId));
         result.add(1, relation.isFollow(id, otherId));
         result.add(2, friendService.isBlockedFriend(id, otherId));

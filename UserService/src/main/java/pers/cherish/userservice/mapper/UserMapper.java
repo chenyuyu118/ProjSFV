@@ -17,4 +17,6 @@ public interface UserMapper extends BaseMapper<User> {
     List<UserVo> selectUserPage(String value, int startIndex, int endIndex);
 
     List<UserVo> selectAllUserVo();
+
+    List<UserVo> getUserProfileRange(List<Long> userIds);
 }

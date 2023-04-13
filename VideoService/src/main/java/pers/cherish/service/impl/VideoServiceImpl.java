@@ -140,4 +140,5 @@ public class VideoServiceImpl implements VideoService {
         int endIndex = page * videoPageSize;
         return videoMapper.selectMyVideos(id, startIndex, endIndex);
     }
+
 }

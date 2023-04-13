@@ -24,8 +24,9 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
     @Override
     public void likeComment(String videoId, Long commentId, Long userId) {
-        if (commentDislikeMapper.isDislikeComment(videoId, commentId, userId))
-            commentDislikeMapper.cancelDislike(videoId, commentId, userId);
+//        if (commentDislikeMapper.isDislikeComment(videoId, commentId, userId)) {
+//            commentDislikeMapper.cancelDislike(videoId, commentId, userId);
+//        }
         if (commentLikeMapper.isLikeComment(videoId, commentId, userId))
             return;
         commentLikeMapper.like(videoId, commentId, userId);
@@ -41,8 +42,9 @@ public class CommentLikeServiceImpl implements CommentLikeService {
 
     @Override
     public void dislikeComment(String videoId, Long commentId, Long userId) {
-        if (commentLikeMapper.isLikeComment(videoId, commentId, userId))
-            commentLikeMapper.cancelLike(videoId, commentId, userId);
+        // TODO 点踩取消点赞
+//        if (commentLikeMapper.isLikeComment(videoId, commentId, userId))
+//            commentLikeMapper.cancelLike(videoId, commentId, userId);
         if (commentDislikeMapper.isDislikeComment(videoId, commentId, userId))
             return;
         commentDislikeMapper.dislike(videoId, commentId, userId);

@@ -46,6 +46,8 @@ aspect:
 variable:
   redis:
     comment-counter-key-prefix: 'counter:comment:'
+    comment-like-key-prefix: 'comment:like:'
+    comment-dislike-key-prefix: 'comment:dislike'
   page:
     parent-comment-size: 20
     child-comment-size: 5

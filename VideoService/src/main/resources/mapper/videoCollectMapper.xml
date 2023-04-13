@@ -41,4 +41,10 @@
         );
     </select>
 
+    <select id="getAllCollectVideos" resultType="java.lang.String">
+        select video_id
+        from t_user_video_collect
+        where user_id = #{userId}
+    </select>
+
 </mapper>

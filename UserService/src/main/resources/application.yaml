@@ -34,9 +34,10 @@ spring:
     name: user-service
   cloud:
     nacos:
-      server-addr: 127.0.0.1:8848
+#      server-addr: 101.43.98.56:8848
       username: nacos
       password: 893494ycy.
+      server-addr: 127.0.0.1:8848
 
 logging:
   level:

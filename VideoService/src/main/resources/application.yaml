@@ -41,6 +41,9 @@ variable:
   redis:
     video-counter-key: counter:video
     video-comment-counter-key: counter:video:comment
+    video-like-key-prefix: 'video:like:'
+    video-dislike-key-prefix: 'video:dislike:'
+    video-collect-key-prefix: 'video:collect:'
   page:
     video-page-size: 10
     video-like-page-size: 20

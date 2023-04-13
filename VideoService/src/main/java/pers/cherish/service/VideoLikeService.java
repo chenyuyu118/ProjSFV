@@ -2,6 +2,7 @@ package pers.cherish.service;
 
 import pers.cherish.domain.VideoVo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface VideoLikeService {
@@ -23,4 +24,7 @@ public interface VideoLikeService {
     void dislike(Long userId, String videoId);
     // 取消点踩
     void cancelDislike(Long userId, String videoId);
+
+    ArrayList<Boolean> getIsLike(long userId, ArrayList<String> ids);
+    ArrayList<Boolean> getIsDisLike(long userId, ArrayList<String> ids);
 }

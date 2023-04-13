@@ -21,4 +21,6 @@ public interface VideoCollectMapper {
     void updateCollector(Long userId, String collector, String newCollector);
 
     boolean isCollectVideo(long userId, String videoId);
+
+    List<String> getAllCollectVideos(Long userId);
 }

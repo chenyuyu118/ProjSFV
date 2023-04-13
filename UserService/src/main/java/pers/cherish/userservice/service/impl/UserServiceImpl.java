@@ -151,4 +151,9 @@ public class UserServiceImpl implements UserService {
         final List<User> userName = userMapper.selectByMap(Map.of("user_name", name));
         return userName.size() == 0 ? null : userName.get(0);
     }
+
+    @Override
+    public List<UserVo> getUserProfileRange(List<Long> userIds) {
+        return userMapper.getUserProfileRange(userIds);
+    }
 }

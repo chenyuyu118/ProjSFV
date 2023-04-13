@@ -44,6 +44,8 @@ public interface UserService {
 
     User getUserByName(String  name);
 
+    List<UserVo> getUserProfileRange(List<Long> userIds);
+
     enum FiledNames {
         SIGNATURE {
             @Override

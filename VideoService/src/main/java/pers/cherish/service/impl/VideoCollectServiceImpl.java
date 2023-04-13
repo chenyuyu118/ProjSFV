@@ -1,12 +1,16 @@
 package pers.cherish.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.stereotype.Service;
 import pers.cherish.domain.VideoVo;
 import pers.cherish.mapper.VideoCollectMapper;
 import pers.cherish.service.VideoCollectService;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -57,5 +61,23 @@ public class VideoCollectServiceImpl implements VideoCollectService {
     @Override
     public boolean isCollectVideo(long userId, String videoId) {
         return videoCollectMapper.isCollectVideo(userId, videoId);
+    }
+
+    @Override
+    public List<Boolean> getIsCollect(Long userId, ArrayList<String> ids) {
+        List<String> videoIds = videoCollectMapper.getAllCollectVideos(userId);
+        ArrayList<Boolean> result = new ArrayList<>();
+        for (int i = 0; i < ids.size(); i++) {
+            if (videoIds.contains(ids.get(i)))
+                result.add(i, true);
+            else
+                result.add(i, false);
+        }
+        return result;
+    }
+
+    @Override
+    public List<String> getAllCollectVideoIds(Long userId) {
+        return videoCollectMapper.getAllCollectVideos(userId);
     }
 }

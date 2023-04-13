@@ -17,6 +17,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +32,12 @@ import pers.cherish.userservice.model.UserDTO;
 import pers.cherish.userservice.model.UserVo;
 import pers.cherish.userservice.service.UserService;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import static com.mongodb.client.model.Filters.in;
+import static org.springframework.data.mongodb.core.query.Criteria.*;
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -45,6 +50,7 @@ public class UserController {
     private final StringRedisTemplate stringRedisTemplate;
     private final TLSSigAPIv2 tlsSigAPIv2;
     private final RabbitTemplate rabbitTemplate;
+    private final MongoTemplate mongoTemplate;
 
     @Value("${variable.user-counter-key}")
     private String userCounterKey;
@@ -62,11 +68,12 @@ public class UserController {
     private Long imExpireTime;
     @Autowired
     public UserController(UserService userService, StringRedisTemplate stringRedisTemplate,
-                          RabbitTemplate rabbitTemplate, TLSSigAPIv2 tlsSigAPIv2) {
+                          RabbitTemplate rabbitTemplate, TLSSigAPIv2 tlsSigAPIv2, MongoTemplate mongoTemplate) {
         this.userService = userService;
         this.stringRedisTemplate = stringRedisTemplate;
         this.rabbitTemplate = rabbitTemplate;
         this.tlsSigAPIv2 = tlsSigAPIv2;
+        this.mongoTemplate = mongoTemplate;
     }
 
     @PostMapping("")
@@ -122,11 +129,6 @@ public class UserController {
             String userName = login.getUserName();
             String id = login.getId().toString();
             String token = userName + ";" + id + ";";
-//            if (macAddress != null) {
-//                token += macAddress;
-//                token += ";";
-//                expireTime = tokenExpireTime;
-//            }
             token =  DigestUtils.md5Hex(token + salt);
             stringRedisTemplate.opsForValue().set("token:" + token, id, expireTime, TimeUnit.HOURS);
             // 聊天接入
@@ -231,5 +233,16 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().body("token error");
         }
+    }
+
+    @GetMapping("/profiles")
+    public ResponseEntity<MyResponse<List<UserVo>>> getProfileRange(@RequestParam(name = "ids")ArrayList<Long> userIds) {
+        List<UserVo> userVos;
+        if (mongoTemplate.collectionExists("user")) {
+            userVos = mongoTemplate.find(Query.query(where("_id").in(userIds)), UserVo.class, "user");
+        } else {
+            userVos = userService.getUserProfileRange(userIds);
+        }
+        return ResponseEntity.ok(MyResponse.ofData(userVos));
     }
 }
