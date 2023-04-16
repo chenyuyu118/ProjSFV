@@ -5,10 +5,10 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_material?&allowMultiQueries=true
+    url:
     type: com.alibaba.druid.pool.DruidDataSource
-    username: cherish
-    password: Yuchenyu1
+    username:
+    password:
     druid:
       filter:
         wall:
@@ -18,11 +18,11 @@ spring:
     name: material-service
   cloud:
     nacos:
-      server-addr: 101.43.98.56:8848
-      username: nacos
-      password: 893494ycy.
+      server-addr:
+      username:
+      password:
       discovery:
-        ip: 43.142.176.191
+        ip:
   servlet:
     multipart:
       enabled: true
@@ -33,11 +33,11 @@ spring:
       ddl-auto: update
     show-sql: true
 cos:
-  secret-id: AKIDzrcEgv68C3iDWcZLvKXflkW5RfocIl15
-  secret-key: tXyBAwUrY2JQl4BB1hASZSBjw2ykPtMi
+  secret-id:
+  secret-key:
   region: ap-nanjing
-  profile-bucket: user-profile-1308753508
-  material-bucket: material-1308753508
+  profile-bucket:
+  material-bucket:
 
 logging:
   level:

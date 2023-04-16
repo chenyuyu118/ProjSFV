@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: cherish
-    password: Yuchenyu1
-    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_video?&allowMultiQueries=true
+    username:
+    password:
+    url:
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
@@ -12,20 +12,20 @@ spring:
             multi-statement-allow: true
   data:
     redis:
-      host: r-uf62pi4o5awjt6sbqupd.redis.rds.aliyuncs.com
-      username: cherish
-      password: Yuchenyu1
+      host:
+      username:
+      password:
     mongodb:
       database: video
-      uri: mongodb+srv://cherish:Yuchenyu1@cluster0.pa95kl8.mongodb.net/test
-      password: Yuchenyu1
+      uri:
+      password:
   application:
     name: video-service
   cloud:
     nacos:
       server-addr: localhost:8848
-      username: nacos
-      password: 893494ycy.
+      username:
+      password:
 logging:
   level:
     sql: trace
@@ -53,11 +53,11 @@ variable:
   public-path: "/user/login,/user"
 
 cos:
-  secret-id: AKIDzrcEgv68C3iDWcZLvKXflkW5RfocIl15
-  secret-key: tXyBAwUrY2JQl4BB1hASZSBjw2ykPtMi
-  region: ap-nanjing
-  profile-bucket: user-profile-1308753508
-  videoBucket: video-1308753508
+  secret-id:
+  secret-key:
+  region:
+  profile-bucket:
+  videoBucket:
 aspect:
   type: user
 

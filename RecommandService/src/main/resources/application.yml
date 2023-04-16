@@ -7,22 +7,22 @@ spring:
   application:
     name: recommend-service
   rabbitmq:
-    addresses: 123.249.7.164
+    addresses:
     virtual-host: /
-    username: root
-    password: root
+    username:
+    password:
   data:
     redis:
-      host: r-uf62pi4o5awjt6sbqupd.redis.rds.aliyuncs.com
-      username: cherish
-      password: Yuchenyu1
+      host:
+      username:
+      password:
     mongodb:
-      uri: mongodb+srv://cherish:Yuchenyu1@cluster0.pa95kl8.mongodb.net/test
-      password: Yuchenyu1
-      database: user
+      uri:
+      password:
+      database:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://rm-bp1h2sd2afhryr97eso.mysql.rds.aliyuncs.com/projsfv_user
+    url:
     type: com.alibaba.druid.pool.DruidDataSource
-    username: cherish
-    password: Yuchenyu1
+    username:
+    password:
